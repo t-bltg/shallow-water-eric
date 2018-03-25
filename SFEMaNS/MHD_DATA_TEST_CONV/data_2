@@ -1,0 +1,76 @@
+============================================
+             GENERIC DATA
+============================================
+
+============================================
+data_mesh
+.t.         !Unformatted=.f.; Formatted =.t.
+'.' 'Mesh_10_form.FEM'
+
+============================================
+data_periodic
+1    ! nombre de paires de cotes perioriques
+4 2 .0 1.
+
+============================================
+data_scheme_time
+'nst'    ! Type du probleme a resoudre 'nst', 'mxw', mhd'
+.01d0 100  ! dt, nb_iteration, freq_restart
+.f.
+
+==============
+select_mode
+1     ! m_max (ne sert que si select_mode=.f.)
+.t. 3 !select_mode, nb_liste_mode
+0 1 2 
+
+
+============================================
+              NAVIER STOKES
+============================================
+
+============================================
+mesh_navier_stokes
+1    !nombre de domaines
+1    !indice des domaines
+
+============================================
+data_scheme_navier_stokes
+1.d0  .f.           ! Re  Reynolds dynamique, second_order_ext_pressure=.t.
+
+============================================
+data_condlim_ns
+0      ! nb de bords Dirichlet pour la pression
+0      ! n'importe quoi
+2      ! nb de bords Dirichlet pour Vr
+1 5    ! Numero des bords
+2      ! nb de bords Dirichlet pour Vt
+1 5    ! Numero des bords
+2      ! nb de bords Dirichlet pour Vz
+1 5    ! Numero des bords
+
+
+==============
+data_solver_vit
+100      ! Max iterations
+17       ! Level of fill ins
+6        ! unit for outpouts  
+1        ! Reorder, 0 if no reordering
+1.e-6    ! epsilon_relatif
+0.0001   ! tolerence in ILU
+
+==============
+data_solver_press
+100      ! Max iterations
+50       ! Level of fill ins
+6        ! unit for outpouts  
+1        ! Reorder, 0 if no reordering
+1.e-6    ! epsilon_relatif
+0.0001 ! tolerence in ILU
+============================================
+
+==============
+data_stab_LES_NS
+.F.
+0.d0 
+0.d0  coeff1, coeff2

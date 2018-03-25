@@ -1,0 +1,167 @@
+Tests redone Feb 15 2011 by JLG on Turing.
+All maxwell tests done with alpha=0.6 
+All tests done with the direct solver pardiso
+
+============================================================================
+TEST1
+Mesh_10_form.FEM/ Re=1, dt=.01d0 itmax = 100, 3 modes: 0, 1, 2 
+ CHAMP de Vitesse #####################
+ Erreur L1   vitesse   =    6.8301563973431362E-004
+ erreur L2   vitesse   =    1.7282901543716926E-005
+ erreur H1   vitesse   =    6.9169676071230066E-004
+ norme  L2 divergence  =    3.3229114075072775E-003
+ CHAMP de pression #####################
+ Erreur L1   pression  =    4.9695063405321843E-002
+ erreur L2   pression  =    4.4005992583457434E-004
+
+============================================================================
+TEST2
+Mesh_10_form.FEM/ Re=1, dt=.01d0 itmax = 100, 3 modes: 0, 1, 2 
+ CHAMP de Vitesse #####################
+ Erreur L1   vitesse   =    1.7587430639234081E-003
+ erreur L2   vitesse   =    7.9319862608799715E-005
+ erreur H1   vitesse   =    3.0416836119411548E-003
+ norme  L2 divergence  =    2.1306821457817177E-002
+ CHAMP de pression #####################
+ Erreur L1   pression  =    9.7737646596212924E-002
+ erreur L2   pression  =    2.1956426024101077E-003
+
+============================================================================
+TEST3
+Mesh_10_form.FEM/P1P2, Rm=1, dt=.01d0 itmax = 100, 3 modes: 1, 2, 3
+ CHAMP Hn #####################
+ erreur finale Hn   L2       =    4.4601839005929396E-004
+ erreur finale rot(Hn)   L2  =    1.7242360977381217E-003
+ erreur finale div(mu Hn)   L2  =    5.4694155111561426E-003
+ CHAMP phin #####################
+ erreur final phin  H1  =    1.4344142888934232E-004
+
+Mesh_20_form.FEM/P1P2, Rm=1, dt=.01d0 itmax = 100, 3 modes: 1, 2, 3
+ CHAMP Hn #####################
+ erreur finale Hn   L2       =    1.4604364458118666E-004
+ erreur finale rot(Hn)   L2  =    5.6313747378670660E-004
+ erreur finale div(mu Hn)   L2  =    2.9726848547513901E-003
+ CHAMP phin #####################
+ erreur final phin  H1  =    4.4269774289278011E-005
+
+Mesh_10_form.FEM/P2P2, Rm=1, dt=.01d0 itmax = 100, 3 modes: 1, 2, 3
+ CHAMP Hn #####################
+ erreur finale Hn   L2       =    1.6728599136503711E-005
+ erreur finale rot(Hn)   L2  =    2.7764568111172167E-005
+ erreur finale div(mu Hn)   L2  =    1.6869907371328742E-004
+ CHAMP phin #####################
+ erreur final phin  H1  =    1.3066692424799362E-005
+
+Mesh_20_form.FEM/P2P2, Rm=1, dt=.01d0 itmax = 100, 3 modes: 1, 2, 3
+ CHAMP Hn #####################
+ erreur finale Hn   L2       =    4.4358326737479837E-006
+ erreur finale rot(Hn)   L2  =    6.6390051123972714E-006
+ erreur finale div(mu Hn)   L2  =    5.5250219007410685E-005
+ CHAMP phin #####################
+ erreur final phin  H1  =    2.8516626639658483E-006
+
+============================================================================
+Test4
+Mesh_10_form.FEM/P1P2,  Rm=1, dt=.01d0 itmax = 100, 1 mode: 1
+ CHAMP Hn #####################
+ erreur finale Hn   L2       =    0.1293194847224393
+ erreur finale rot(Hn)   L2  =    0.1427589837663723
+ erreur finale div(mu Hn)   L2  =    0.2587920005035055
+ CHAMP phin #####################
+ erreur final phin  H1  =    0.2095689964024643
+
+
+Mesh_20_form.FEM/P1P2, dt=.01d0 itmax = 100, 1 mode: 1
+ CHAMP Hn #####################
+ erreur finale Hn   L2       =    4.1704233098295886E-002
+ erreur finale rot(Hn)   L2  =    4.1334277480527398E-002
+ erreur finale div(mu Hn)   L2  =    0.1521244541136703
+ CHAMP phin #####################
+ erreur final phin  H1  =    0.1351604891163622
+
+Mesh_10_form.FEM/P2P2
+ CHAMP Hn #####################
+ erreur finale Hn   L2       =    7.6520419348863359E-003
+ erreur finale rot(Hn)   L2  =    1.0892075718644688E-002
+ erreur finale div(mu Hn)   L2  =    4.7841318372052466E-002
+ CHAMP phin #####################
+ erreur final phin  H1  =    1.4833269224316652E-002
+
+Mesh_20_form.FEM/P2P2,  dt=.01d0 itmax = 100, 1 mode: 1
+ CHAMP Hn #####################
+ erreur finale Hn   L2       =    1.3396789165649539E-003
+ erreur finale rot(Hn)   L2  =    1.9549765892415767E-003
+ erreur finale div(mu Hn)   L2  =    1.5343582674593879E-002
+ CHAMP phin #####################
+ erreur final phin  H1  =    1.7483089953637568E-003
+
+============================================================================
+Test5 
+CYL10_TCM_PERIO_form.FEM/P1P2, dt=.01d0 itmax = 100, 2 modes: 1, 2
+ CHAMP Hn #####################
+ erreur finale Hn   L2       =    1.8298323513991108E-004
+ erreur finale rot(Hn)   L2  =    3.3180883407692163E-004
+ erreur finale div(mu Hn)   L2  =    1.8740226273635196E-003
+ CHAMP phin #####################
+ erreur final phin  H1  =    5.3260332470418353E-006
+
+CYL20_TCM_PERIO_form.FEM/P1P2
+ CHAMP Hn #####################
+ erreur finale Hn   L2       =    5.1854629969637256E-005
+ erreur finale rot(Hn)   L2  =    1.5049185876288930E-004
+ erreur finale div(mu Hn)   L2  =    1.0506431444718301E-003
+ CHAMP phin #####################
+ erreur final phin  H1  =    4.7305015020591742E-006
+
+CYL10_TCM_PERIO_form.FEM/P2P2
+ CHAMP Hn #####################
+ erreur finale Hn   L2       =    8.4965206606737612E-006
+ erreur finale rot(Hn)   L2  =    1.0305173211104839E-005
+ erreur finale div(mu Hn)   L2  =    1.9187229986859097E-005
+ CHAMP phin #####################
+ erreur final phin  H1  =    5.1691318604457428E-006
+
+CYL20_TCM_PERIO_form.FEM/P2P2
+ CHAMP Hn #####################
+ erreur finale Hn   L2       =    8.0946248725064003E-006
+ erreur finale rot(Hn)   L2  =    1.0036713679914777E-005
+ erreur finale div(mu Hn)   L2  =    4.6719027386955992E-006
+ CHAMP phin #####################
+ erreur final phin  H1  =    4.7212022076767961E-006
+
+============================================================================
+TEST6
+sphere_0.05_form.FEM/P1P2
+ CHAMP Hn #####################
+ erreur finale Hn   L2       =    0.2580739546860586
+ erreur finale rot(Hn)   L2  =    0.5070225633313225
+ erreur finale div(mu Hn)   L2  =    2.4181678715405559E-002
+ CHAMP phin #####################
+ erreur final phin  H1  =    4.9377222085009837E-004
+
+sphere_0.05_form.FEM/P2P2
+CHAMP Hn #####################
+ CHAMP Hn #####################
+ erreur finale Hn   L2       =    1.3612334150756291E-003
+ erreur finale rot(Hn)   L2  =    1.2445465902317415E-002
+ erreur finale div(mu Hn)   L2  =    1.6140155162363660E-003
+ CHAMP phin #####################
+ erreur final phin  H1  =    2.5992833269268335E-005
+
+============================================================================
+TEST7
+sphere_0.05_form.FEM/P1P2
+ CHAMP Hn #####################
+ erreur finale Hn   L2       =    0.1230466708392055
+ erreur finale rot(Hn)   L2  =    0.2040483867498807
+ erreur finale div(mu Hn)   L2  =    3.1242077355915932E-002
+ CHAMP phin #####################
+ erreur final phin  H1  =    1.8761468917002245E-003
+
+sphere_0.05_form.FEM/P2P2
+ CHAMP Hn #####################
+ erreur finale Hn   L2       =    1.2219913488137073E-003
+ erreur finale rot(Hn)   L2  =    1.4806994374575054E-002
+ erreur finale div(mu Hn)   L2  =    1.4821653129144963E-003
+ CHAMP phin #####################
+ erreur final phin  H1  =    8.2965574975116284E-004

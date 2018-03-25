@@ -1,0 +1,73 @@
+============================================
+             GENERIC DATA
+============================================
+
+============================================
+data_mesh
+.f.         !Unformatted=.f.; Formatted =.t.
+'.' 'test_mu_dg_10.FEM'
+
+============================================
+data_periodic
+0    ! nombre de paires de cotes perioriques
+4 2 .0 1.
+
+============================================
+data_scheme_time
+'mxw'            ! Type du probleme a resoudre 'nst', 'mxw', mhd'
+.f.              ! irestart
+.5d0 10  100 ! dt, nb_iteration, freq_restart
+
+==============
+select_mode
+1     ! m_max (ne sert que si select_mode=.f.)
+.t. 1 !select_mode, nb_liste_mode
+1 
+
+============================================
+              MAXWELL
+============================================
+
+============================================
+mesh_maxwell
+1   2             ! type_fe_H, type_fe_phi
+2                 ! nb_dom: number of sub_domains for H
+1 3               ! list_dom_H(1:nb_dom)
+1                 ! nb_dom: number of sub_domains for phi
+2                 ! list_dom_phi(1:nb_dom)
+1                 ! nb_inter  ! number of interfaces between H and phi
+5                 ! list_inter
+1.d0              ! mu_phi
+1.d0  1.d0        ! mu_H(1:b_dom_H)  (as many as subdomains for H)
+1.d0  1.d0         ! sigma(1:nb_dom_H)
+
+============================================
+data_scheme_maxwell
+1.d0             ! Rem Reynolds magnetique
+-1  0           ! R_fourier, index_fourier (pour imposer les CL de Fourier)
+
+============================================
+data_condlim_maxwell
+2      ! nb de bords Dirichlet pour Hr
+2 4   ! Numero des bords
+2       ! nb de bords Dirichlet pour Ht
+2 4   ! Numero des bords
+2       ! nb de bords Dirichlet pour Hz
+2 4    ! Numero des bords
+3      ! nb de bords Dirichlet pour Phi
+2 4 5   ! numero des dords
+
+
+============================================
+interface_mu
+1  ! nb_inter_mu: Nb interface where mu is discontinuous in H domain
+6  ! list_inter_mu(1:nb_inter_mu) : list of interfaces where mu is discontinuous in H domain
+
+==============
+data_solver_maxwell
+100      ! Max iterations
+90       ! Level of fill ins
+6        ! unit for outpouts  
+1        ! Reorder, 0 if no reordering
+1.e-15    ! epsilon_relatif
+1.d-5   ! tolerence in ILU

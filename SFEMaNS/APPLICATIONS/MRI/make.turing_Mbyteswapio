@@ -1,0 +1,16 @@
+#####################TURING
+CMP=mpif77 -c -Mbyteswapio #Parallele et monoproc
+LNK=mpif77 -Mbyteswapio
+INC_FFTW= -I/opt/fftw/pgi/include /opt/fftw/pgi/lib/libfftw3.a
+RACINE =../..
+SPLIB_DIR = /home/nore/nore00/SPLIB
+#SPLIB_DIR = /home/coro/ribeiro/FEM90/FEM_CODE/SPLIB
+BLAS_LIB =  $(ATLAS_PGI_64)
+#BLAS_LIB =  $(SPLIB_DIR)/blas/localblas.a 
+#####################TURING
+OPT      = -O
+#OPT     =   -O -r8
+#OPT     =   -C #-g
+LIB_TIME =
+
+

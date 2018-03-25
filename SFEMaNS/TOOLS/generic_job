@@ -1,0 +1,58 @@
+#!/bin/bash
+# @ job_name = hpm5
+# @ cpu_limit = 09:00:00
+# @ job_cpu_limit = 09:10:00
+# @ data_limit = 2.5Gb
+# @ stack_limit = 0.6Gb
+# @ output = out
+# @ error = err
+# @ job_type = parallel
+# @ total_tasks = 8
+# @ notification = complete
+# @ queue
+
+exec=$HOME/files/test.exe
+set -x
+
+WORK=$LOADL_STEP_INITDIR/${LOADL_JOB_NAME}_results
+mkdir $WORK
+
+cd $TMPDIR
+cp $exec test.exe
+mfget results/CYL40_TCM_SYM_Z.FEM
+cp $LOADL_STEP_INITDIR/data .
+./test.exe 
+result=$?
+echo "Program returned value: $result"
+set +x
+
+plotfiles="Hin Vci Hma1 Hma2 Hma3 Hma4 Hma5 Hma6 phi1 phi2 Uns1 Uns2 Uns3 Uns4 Uns5 Uns6 vect ur1 ur2 ut1 ut2 uz1 uz2"
+otherfiles="e Mesh suite anem norme fort"
+
+# compress all
+
+for i in $plotfiles ; do 
+	tar cvf $i.tar $i*plt
+done
+for i in $otherfiles ; do
+	tar cvf $i.tar $i* ;
+done
+
+gzip *.tar
+mfput data *.gz results/$LOADL_JOB_NAME
+cp    data e* anem* $WORK
+
+# remove all plotfiles and otherfiles and copy whatever rests to $WORK/REST
+for i in $plotfiles ; do rm $i*plt ; done
+for i in $otherfiles ; do rm $i* ; done
+rm data CYL40_TCM_SYM_Z.FEM test.exe  *.gz
+if [[ -n $(ls) ]] ; then 
+	mkdir $WORK/REST
+	cp -r * $WORK/REST
+fi
+
+# memory usage
+Qstat -r $LOADL_STEP_ID
+
+# return the value returned by test.exe 
+exit $result

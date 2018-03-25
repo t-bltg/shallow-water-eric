@@ -1,0 +1,7 @@
+ Loading mesh-file ...
+ end of gen_Gauss
+ total time   12.895999999949709      Time per time step and dof   4.1848390446358091E-006        1600
+  Relative L1 error on h  0.42701921766901174     
+  Relative L2 error on h  0.40506567200709265     
+  Relative L1 error on q  0.71389626528219119     
+  Relative L2 error on q  0.69669893423454421     

@@ -1,0 +1,45 @@
+#!/usr/bin/bash
+# by Katarzyna Boronska
+# July 2007
+
+usage="This script submits the given job to the LoadLleveler queue. \
+Before submitting it verifies that \
+the job_name is the same as the current directory name \
+and that no results with the same name are already on gaya.\
+A directory called 'results' should exist on gaya's home, otherwise the script system will not work properly."
+
+if [[ $# -lt 1 ]] ; then
+	echo $usage
+	exit 1
+fi
+
+job=$1
+
+curdir=$PWD
+correctname=${curdir##*/}
+
+# check the name:
+jobname=$(perl -ne '/\# \@ job_name\s*=\s*(\S+)/ and do { print $1; exit } ' $job)
+
+if [[ $jobname != $correctname ]] ; then
+	echo "Error! The job name is ${jobname}, but the directory is $correctname!"
+	echo "The job will not be submitted." 
+	exit 2
+fi
+
+lsresult=$(rsh gaya ls results/$jobname 2>&1)
+if [[ $lsresult != *ERROR* ]] ; then
+	echo "Error! results/$jobname exists already on gaya!"
+	echo "The job will not be submitted."
+	exit 3
+fi
+
+# If everything went fine, we submit the job
+
+# remove line protecting from submitting with llsubmit
+perl -ne 'print unless /donotusellsubmit/' $job > .$job
+
+llsubmit .$job
+
+rm .$job
+	

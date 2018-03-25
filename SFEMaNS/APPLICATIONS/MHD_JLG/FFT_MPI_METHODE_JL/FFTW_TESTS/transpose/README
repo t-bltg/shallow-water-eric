@@ -1,0 +1,13 @@
+This is the test for the simplest transpose problem under MPI.
+Each of processors, P1, P2, ... , PK contans a vector of data:
+ P1: 101     102     103     104     105     106     107     108     109
+ P2: 1001    1002    1003    1004    1005    1006    1007    1008    1009
+ P3: 10001   10002   10003   10004   10005   10006   10007   10008   10009
+ 
+We need to exchange this information, so that each processor contains complete columns:
+ P1: 101     102     103     1001    1002    1003    10001   10002   10003
+ P2: 104     105     106     1004    1005    1006    10004   10005   10006   
+ P3: 107     108     109     1007    1008    1009    10007   10008   10009
+
+
+

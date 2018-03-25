@@ -1,0 +1,47 @@
+#####################Brazos
+#LNK = mpif90
+#CMP = $(LNK) -c -r8
+
+#BLAS_LIB = -L$(BRAZOS_GOTOBLAS_LIB) -lgoto
+# Threaded library
+#BLAS_LIB = -L$(BRAZOS_GOTOBLAS_LIB) -lgotop -lpthread
+
+#INC_FFTW = -I$(BRAZOS_FFTW3_INC)
+#LIB_FFTW = -L$(BRAZOS_FFTW3_LIB) -lfftw3
+# Threaded library
+# Try using -l nodes=8:ppn=1
+#LIB_FFTW = -L$(BRAZOS_FFTW3_LIB) -lfftw3_threads -lpthread
+#ROOT = /home/guermond/
+#RACINE = $(ROOT)/SFEMaNS
+#SPLIB_DIR = $(ROOT)/SPLIB
+#####################Brazos
+
+OPT= -O ##-Mbyteswapio
+
+#####################Bloc507c TAMU
+#CMP	 = ifort -c -align # -kind=byte
+#LNK	 = ifort
+#INC_FFTW = /usr/lib/libfftw3.a 
+#RACINE = /home/guermond/FEM90/SFEMaNS
+#SPLIB_DIR = $(RACINE)/../SPLIB
+#BLAS_LIB =  $(SPLIB_DIR)/blas/localblas.a 
+#####################Bloc507c TAMU
+
+
+#####################TURING
+#CMP=mpif77 -c #Paralle et monoproc
+#LNK=mpif77
+#INC_FFTW= -I/opt/fftw/pgi/include /opt/fftw/pgi/lib/libfftw3.a
+#RACINE =/home/coro/laguerre/FEM90/FEM_CODE/FLOWERS/SFEMaNS
+#SPLIB_DIR = $(RACINE)/../../SPLIB
+#BLAS_LIB =  $(SPLIB_DIR)/blas/localblas.a 
+#####################TURING
+#####################ZAHIR
+CMP=mpxlf_r -qfree=f90 -c #Paralle et monoproc
+LNK=mpxlf_r
+INC_FFTW=$$FFTW3_I4S4D8
+RACINE = /homegpfs/rech/nor/rnor569/SFEMaNS
+SPLIB_DIR = /homegpfs/rech/nor/rnor569/SPLIB
+BLAS_LIB =  -lessl
+
+#####################ZAHIR

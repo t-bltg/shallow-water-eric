@@ -1,0 +1,43 @@
+#!/bin/bash
+# @ job_name = MHD_interp_sym
+# @ job_type = parallel
+# @ output = MHD_interp_sym_cyl20.out
+# @ error = MHD_interp_sym_cyl20.err
+# @ cpu_limit = 0:55:00
+# @ job_cpu_limit = 01:00:00
+# @ data_limit = 1.3gb
+# @ total_tasks = 1
+# @ queue
+# Pour avoir l'écho des commandes
+set -x
+## DIRECTORIES DE SAUVEGARDE
+## GAYADIR = SAVE SUR GAYA
+## GAYAGET = GET SUR GAYA
+## WORK    = SAVE SUR SWORKDIR
+#export GAYADIR=RESULTATS/MHD/TC_ANTI_Re120/CYL20_TCM_DEMI_Z_UNIF/Rm240/essai_interp
+#export GAYAGET=RESULTATS/MHD/TC_ANTI_Re120/CYL20_TCM_DEMI_Z_UNIF/Rm240/tfin_1400
+export GAYADIR=RESULTATS/MAXWELL/TC_ANTI_Re120/CYL20_TCM_DEMI_Z_UNIF/essai_interp
+export GAYAGET=RESULTATS/MAXWELL/TC_ANTI_Re120/CYL20_TCM_DEMI_Z_UNIF/Rm240_tfin_250
+export GAYAGETMESH=RESULTATS/HYDRO/TC_SYM_ANTI_Re120/CYL20_TCM_DEMI_Z_UNIF
+export GAYAGETMH=RESULTATS/MHD/TC/Re_120_Rm_240/CYL20_SYM
+export WORK=$WORKDIR/RL/MHD/TC_ANTI_Re120/essai_interp_sym
+mkdir $WORK
+##
+# Répertoire temporaire de travail
+cd $TMPDIR
+# La variable LOADL_STEP_INITDIR est automatiquement positionnée par 
+# LoadLeveler au répertoire dans lequel on tape la commande llsubmit
+cp $LOADL_STEP_INITDIR/interpol_sym.exe interpol_sym.exe 
+#cp $LOADL_STEP_INITDIR/interpol_mono.exe interpol_mono.exe 
+mfget $GAYAGETMH/CYL20_TCM_SYM_Z.FEM CYL20_TCM_SYM_Z.FEM
+mfget $GAYAGETMESH/CYL20_TCM_DEMI_Z.FEM CYL20_TCM_DEMI_Z.FEM
+cp $LOADL_STEP_INITDIR/data_interpol_sym data_interpol_sym
+## GET SUR GAYA
+mfget $GAYAGET/suite_ns.CYL20_TCM_DEMI_Z.FEM suite_ns.CYL20_TCM_DEMI_Z.FEM
+mfget $GAYAGET/suite_maxwell_002.CYL20_TCM_DEMI_Z.FEM suite_maxwell.CYL20_TCM_DEMI_Z.FEM
+# Exécution d'un programme MPI
+./interpol_sym.exe
+#./interpol_mono.exe
+ls -lrt
+cp suite*999*  $WORK
+mfput suite*999* $GAYADIR

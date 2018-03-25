@@ -1,0 +1,15 @@
+#####################zahir
+CMP = mpxlf_r -c -qfree=f90  -qrealsize=8
+LNK = mpxlf_r -qfree=f90   -qrealsize=8
+RACINE =/homegpfs/rech/nor/rnor569/SFEMaNS
+INC_FFTW = $$FFTW3_I4S4D8
+LIB_FFTW = $$FFTW3_I4S4D8
+SPLIB_DIR = $(RACINE)/../SPLIB
+BLAS_LIB =/usr/lib/libblas.a
+#####################zahir
+
+OPT     =   -O
+LIB_TIME =
+
+
+

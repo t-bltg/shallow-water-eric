@@ -1,0 +1,165 @@
+============================================
+             GENERIC DATA
+============================================
+
+============================================
+data_debug
+.f.                        !Convergence test, .true. or .false. 
+'../../../MHD_DATA_TEST_CONV' !Location of data's directories for testing purpouse 
+2                         !Type of problem, 
+
+1 = NS non periodic in Mesh10.FEM
+2 = NS periodic in Mesh10.FEM
+3 = MXW non periodic in Mesh10.FEM
+4 = MXW periodic in Mesh10.FEM
+5 = MXW non periodic in CYL10_TCM_PERIO.FEM, mu discontinu
+============================================
+
+
+============================================
+data_mesh
+.f.         !Unformatted=.f.; Formatted =.t.
+'.' 'TC_G2pi_10.FEM' 'cav_0.1.FEM' !repertoire_maillage, fichier_maillage
+
+============================================
+data_periodic
+0    ! nombre de paires de cotes perioriques
+4 2 .0 4.
+
+============================================
+data_scheme_time
+'mxw'            ! Type du probleme a resoudre 'nst', 'mxw', !mhd'
+.1d0  2000    ! dt nb_iterations 
+.t.  .f.         ! u_restart,  H_restart
+
+============================================
+data_postproc
+1000 10 1000   ! freq_restart, freq_en, freq_plot
+1.2d0 1.5d0 1.7d0              ! x_anemo_v
+-2.5d0 -1.5d0 0.d0 1.5d0 2.5d0 ! y_anemo_v
+1.2d0 1.5d0 1.7d0              ! x_anemo_h
+-2.5d0 -1.5d0 0.d0 1.5d0 2.5d0 ! y_anemo_h
+
+==============
+select_mode
+2     ! m_max (ne sert que si select_mode=.f.)
+.f. 3 !select_mode, nb_liste_mode
+0 2 4 3 4 5 6 7 8 9 10 11 12   !liste_modes
+1 2 3
+
+==============
+data_select_mode_nuls
+.f.          ! .t. qd on tue modes pairs en H et impairs en U
+
+==============
+data_arpack
+.t.  !if_arpack
+'max'  ! max or nst arpack_type
+
+==============
+solver_arpack
+10    !nb_vp
+1000  !iter_max
+1.d-5 ! tol_arpack
+'LR'  !which
+.f.   !redo
+
+============================================
+              NAVIER STOKES
+============================================
+
+============================================
+mesh_navier_stokes
+1    !nombre de domaines
+1    !indice des domaines
+
+============================================
+data_scheme_navier_stokes
+120.d0  .f.           ! Re  Reynolds dynamique, second_order_ext_pressure=.t.
+
+============================================
+data_condlim_ns
+0               ! nb de bords Dirichlet pour la pression
+0               ! n'importe quoi
+2               ! nb de bords Dirichlet pour Vr
+2 4             ! Numero des bords
+2               ! nb de bords Dirichlet pour Vt
+2 4             ! Numero des bords
+2               ! nb de bords Dirichlet pour Vz
+2 4             ! Numero des bords
+
+==============
+data_solver_vit
+100      ! Max iterations
+30       ! Level of fill ins
+16       ! unit for outpouts
+1        ! Reorder, 0 if no reordering
+1.e-5    ! epsilon_relatif
+1.e-7   ! tolerence in ILU
+
+==============
+data_solver_press
+100      ! Max iterations
+50       ! Level of fill ins
+16        ! unit for outpouts
+1        ! Reorder, 0 if no reordering
+1.e-9    ! epsilon_relatif
+1.e-7 ! tolerence in ILU
+============================================
+
+==============
+data_stab_LES_NS
+.00 .00d0  coeff1, coeff2
+
+
+============================================
+
+
+============================================
+              MAXWELL
+============================================
+
+============================================
+mesh_maxwell
+2  2              ! type_fe_H, type_fe_phi
+1                 ! nb_dom: number of sub_domains for H
+1                 ! list_dom_H(1:nb_dom)
+1                 ! nb_dom: number of sub_domains for phi
+3                 ! list_dom_phi(1:nb_dom)
+2                 ! nb_inter  ! number of interfaces between H and phi
+2 4               ! list_inter
+1.d0              ! mu_phi
+1.d0              ! mu_H(1:nb_dom_H)  (as many as subdomains for H)
+1.d0              ! sigma(1:nb_dom_H)
+
+============================================
+data_scheme_maxwell
+220.d0            ! Rem Reynolds magnetique
+-1.d0  3          ! R_fourier, index_fourier (pour imposer les CL de Fourier)
+1.d0 1.d0 1.d0    ! stab(1) = stab_div; stab(2) = stab_colle_H_phi; stab(3) = stab_colle_H_mu
+
+============================================
+data_condlim_maxwell
+0       ! nb de bords Dirichlet pour Hr
+2 4     ! Numero des bords
+0       ! nb de bords Dirichlet pour Ht
+2 4     ! Numero des bords
+0       ! nb de bords Dirichlet pour Hz
+2 4     ! Numero des bords
+0       ! nb de bords Dirichlet pour Phi
+3 2 4   ! numero des dords
+
+
+============================================
+interface_mu
+0  ! nb_inter_mu: Nb interface where mu is discontinuous in H domain
+6 7 8 9 10 11 ! list_inter_mu(1:nb_inter_mu) : list of interfaces where mu is discontinuous in H domain
+
+==============
+data_solver_maxwell
+100      ! Max iterations
+80       ! Level of fill ins
+6        ! unit for outpouts  
+1        ! Reorder, 0 if no reordering
+1.e-5    ! epsilon_relatif
+1.d-6    ! tolerence in ILU

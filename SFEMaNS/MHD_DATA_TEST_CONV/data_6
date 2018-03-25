@@ -1,0 +1,100 @@
+============================================
+             GENERIC DATA/Durand H/H/phi
+============================================
+
+
+============================================
+data_mesh
+.t.         !Unformatted=.f.; Formatted =.t.
+'.' 'sphere_0.05_form.FEM' !repertoire_maillage, fichier_maillage
+
+============================================
+data_periodic
+0    ! nombre de paires de cotes perioriques
+4 2 .0 4.
+
+============================================
+data_scheme_time
+'mxw'            ! Type du probleme a resoudre 'nst', 'mxw', !mhd'
+1.d10 1 2.5d-2 800     ! dt nb_iterations 
+.f.  .f.         ! u_restart,  H_restart
+
+============================================
+data_postproc
+1000 100000 100000   ! freq_restart, freq_en, freq_plot
+
+==============
+select_mode
+1     ! m_max (ne sert que si select_mode=.f.)
+.t. 1 !select_mode, nb_liste_mode
+0 1 2 3 4 5 6 7 8 9 10 11 12   !liste_modes
+1 2 3
+
+==============
+data_select_mode_nuls
+.f.          ! .t. qd on tue modes pairs en H et impairs en U
+
+
+
+============================================
+              MAXWELL
+============================================
+
+============================================
+mesh_maxwell
+1  2            ! type_fe_H, type_fe_phi
+2               ! nb_dom: number of sub_domains for H
+1 2             ! list_dom_H(1:nb_dom)
+1               ! nb_dom: number of sub_domains for phi
+3               ! list_dom_phi(1:nb_dom)
+1               ! nb_inter  ! number of interfaces between H and phi
+3               ! list_inter
+1.d0            ! mu_phi
+1.d0 200.d0       ! mu_H(1:b_dom_H)  (as many as subdomains for H)
+1.d0 1.d0       ! sigma(1:nb_dom_H)
+
+============================================
+data_scheme_maxwell
+1.d0            ! Rem Reynolds magnetique
+-1.d0  3          ! R_fourier, index_fourier (pour imposer les CL de Fourier)
+.17d0 1.d0 1.d0  ! stab(1) = stab_div; stab(2) = stab_colle_H_phi; stab(3) = stab_colle_H_mu
+
+
+
+
+============================================
+data_condlim_H
+0       ! nb de bords Dirichlet pour H
+2 4     ! Numero des bords
+
+============================================
+data_condlim_phi
+1       ! nb de bords Dirichlet pour Phi
+4 1     ! numero des dords
+
+
+============================================
+interface_mu
+1  ! nb_inter_mu: Nb interface where mu is discontinuous in H domain
+2  ! list_inter_mu(1:nb_inter_mu) : list of interfaces where mu is discontinuous in H domain
+
+==============
+data_solver_maxwell
+200     ! Max iterations
+400     ! Level of fill ins
+6       ! unit for outpouts  
+1       ! Reorder, 0 if no reordering
+1.d-8   ! epsilon_relatif
+1.d-10  ! tolerence in ILU
+
+============================================
+data_condlim_maxwell
+0       ! nb de bords Dirichlet pour Hr
+2 4     ! Numero des bords
+0       ! nb de bords Dirichlet pour Ht
+2 4     ! Numero des bords
+0       ! nb de bords Dirichlet pour Hz
+2 4     ! Numero des bords
+1       ! nb de bords Dirichlet pour Phi
+4 1     ! numero des dords
+

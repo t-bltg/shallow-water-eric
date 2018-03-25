@@ -1,0 +1,255 @@
+#CMP	 = pgf90 -c # -kind=byte
+#LNK	 = pgf90
+
+#CMP	 = ifc -c # -kind=byte
+#LNK	 = ifc
+
+#CMP	 = ifort -c -align # -kind=byte
+#LNK	 = ifort
+
+CMP=mpif77 -c
+LNK=mpif77
+
+#CMP=mpxlf_r -qfree=f90 -qsuffix=f=f90 -c
+#LNK=mpxlf_r -qfree=f90 -qsuffix=f=f90
+
+#CMP=pgf95 -c
+#LNK=pgf95
+
+#OPT	 =   -C #-g 
+OPT	 =   -O #-g 
+#OPT	 =   -O -r8 #-g 
+#OPT= -qnooptimize -g -C -qinitauto=7FBFFFFF \
+        -qflttrap=overflow:underflow:zerodivide:invalid:enable -qfloat=nans \
+        -qsigtrap -qextchk -qkeepparm -qlanglvl=90std
+
+LIB_TIME =  
+
+#RACINE =  ../../
+#RACINE = /home/laguerre/FEM90/FEM_CODE
+#RACINE =/home/coro/laguerre/FEM90/FEM_CODE
+#RACINE =/people/laguerre/FEM90/FEM_CODE
+
+RACINE = ../../
+RACINE_MHD = ../../MHD_POSTPROC
+
+FEM_OBJ =  dyn_line.o \
+           def_type_mesh.o \
+	   associate_gauss.o \
+	   gauss_points_2d_p1.o \
+	   gauss_points_2d_p2.o \
+	   chaine_caractere.o \
+	   dir_nodes.o \
+	   solve_splib.o \
+	   prep_mesh.o \
+	   prep_mesh_interface.o \
+	   prep_mesh_periodic.o \
+	   fem_s_direct_axi.o \
+	   fem_tn_axi.o \
+	   fem_tn_navier_mhd.o \
+	   tn_par.o \
+	   fem_sparsekit_axi.o \
+	   st_sparsekit.o \
+	   sub_plot.o \
+	   bessel.o \
+	   condlim_test_conv.o\
+           condlim.o \
+	   restart.o \
+	   fft_parallel.o \
+	   sub_ns.o \
+	   maxwell_update_time.o \
+	   initialisation.o \
+	   post_proc.o \
+	   user_time.o
+
+LOC_OBJ =  
+
+
+GAUSS_OBJ = gauss_points_2d_p1.o\
+	   gauss_points_2d_p2.o
+
+SPLIB_DIR = /home/coro/ribeiro/FEM90/FEM_CODE/SPLIB
+SPLIB_OBJ = $(SPLIB_DIR)/splib.a \
+	/home/coro/ribeiro/FEM90/FEM_CODE/SPLIB/blas/localblas.a \
+	$(SPLIB_DIR)/orderings/reorder.o
+
+#BLAS_LIB = -latlas64
+#BLAS_LIB = -lessl
+BLAS_LIB =
+
+
+test.exe: $(FEM_OBJ) $(SPLIB_OBJ) $(LOC_OBJ) main_mhd.o
+	($(LNK) $(OPT) $(LIB_TIME) -o test.exe main_mhd.o $(FEM_OBJ) $(SPLIB_OBJ) $(LOC_OBJ) $(BLAS_LIB)) 
+run1:
+	mpiexec -boot -machinefile hostfile1 -n 1 ./test.exe
+run2:
+	mpiexec -boot -machinefile hostfile2 -n 2 ./test.exe
+
+
+clean: 
+	rm -f *.o *.mod
+
+
+main_mhd.o:  $(FEM_OBJ)  main_mhd.f90 
+	($(CMP) $(OPT) $(LIB_TIME) main_mhd.f90)
+
+####################################
+# Version mono proceceur
+####################################
+
+test_mono.exe: mpi.o  mpif.h $(FEM_OBJ) $(SPLIB_OBJ) $(LOC_OBJ) main_mhd.o
+	($(LNK) $(OPT) $(LIB_TIME) -o test_mono.exe main_mhd.o mpi.o $(FEM_OBJ) $(SPLIB_OBJ) $(LOC_OBJ) $(BLAS_LIB); \
+	rm mpif.h)
+
+mpi.o: $(RACINE)/FEMSUB_OBJET/mpi.f90
+	(cp $(RACINE)/FEMSUB_OBJET/mpi.f90 mpi.f90; \
+	$(CMP) $(OPT) mpi.f90; \
+	rm mpi.f90)
+mpif.h: 
+	(cp $(RACINE)/FEMSUB_OBJET/mpif.h mpif.h)
+
+
+#                    * * * * * * * * * * * *
+#                    *   FEM OBJECTS       *
+#                    * * * * * * * * * * * *
+#
+
+gauss_points_2d_p1.o: $(RACINE)/GAUSS_POINTS_OBJET/gauss_points_2d_p1.f
+	(cp $(RACINE)/GAUSS_POINTS_OBJET/gauss_points_2d_p1.f gauss_points_2d_p1.f90; \
+	$(CMP) $(OPT) gauss_points_2d_p1.f90; \
+	rm gauss_points_2d_p1.f90)
+
+gauss_points_2d_p2.o: $(RACINE)/GAUSS_POINTS_OBJET/gauss_points_2d_p2.f90
+	(cp $(RACINE)/GAUSS_POINTS_OBJET/gauss_points_2d_p2.f90 gauss_points_2d_p2.f90; \
+	$(CMP) $(OPT) gauss_points_2d_p2.f90; \
+	rm gauss_points_2d_p2.f90)
+
+associate_gauss.o: $(RACINE)/FEMSUB_OBJET/associate_gauss.f90
+	(cp $(RACINE)/FEMSUB_OBJET/associate_gauss.f90 associate_gauss.f90; \
+	$(CMP) $(OPT) associate_gauss.f90; \
+	rm associate_gauss.f90)
+
+user_time.o: $(RACINE)/FEMSUB/user_time.f90
+	(cp $(RACINE)/FEMSUB/user_time.f90 user_time.f90; \
+	$(CMP) $(OPT) $(LIB_TIME) user_time.f90; \
+	rm user_time.f90)
+
+chaine_caractere.o: $(RACINE)/FEMSUB/chaine_caractere.f90
+	(cp $(RACINE)/FEMSUB/chaine_caractere.f90 chaine_caractere.f90; \
+	$(CMP) $(OPT) chaine_caractere.f90; \
+	rm chaine_caractere.f90)
+
+dyn_line.o: $(RACINE)/FEMSUB/dyn_line.f90
+	(cp $(RACINE)/FEMSUB/dyn_line.f90 dyn_line.f90; \
+	$(CMP) $(OPT) dyn_line.f90; \
+	rm dyn_line.f90)
+
+dir_nodes.o: $(RACINE)/FEMSUB/dir_nodes.f90 dyn_line.o
+	(cp $(RACINE)/FEMSUB/dir_nodes.f90 dir_nodes.f90; \
+	$(CMP) $(OPT) dir_nodes.f90; \
+	rm dir_nodes.f90)
+
+def_type_mesh.o: $(RACINE)/FEMSUB_OBJET/def_type_mesh.f90
+	(cp $(RACINE)/FEMSUB_OBJET/def_type_mesh.f def_type_mesh.f90; \
+	$(CMP) $(OPT) def_type_mesh.f90; \
+	rm def_type_mesh.f90)
+
+prep_mesh.o: $(RACINE)/FEMSUB_OBJET/prep_mesh.f90 $(GAUSS_OBJ)
+	(cp $(RACINE)/FEMSUB_OBJET/prep_mesh.f90 prep_mesh.f90; \
+	$(CMP) $(OPT) prep_mesh.f90; \
+	rm prep_mesh.f90)
+
+prep_mesh_periodic.o: $(RACINE)/FEMSUB_OBJET/prep_mesh_periodic.f90 $(GAUSS_OBJ)
+	(cp $(RACINE)/FEMSUB_OBJET/prep_mesh_periodic.f90 prep_mesh_periodic.f90; \
+	$(CMP) $(OPT) prep_mesh_periodic.f90; \
+	rm prep_mesh_periodic.f90)
+
+prep_mesh_interface.o: $(RACINE)/FEMSUB_OBJET/prep_mesh_interface.f90
+	(cp $(RACINE)/FEMSUB_OBJET/prep_mesh_interface.f90 prep_mesh_interface.f90; \
+	$(CMP) $(OPT) prep_mesh_interface.f90; \
+	rm prep_mesh_interface.f90)
+
+fem_s_direct_axi.o: $(RACINE)/FEMSUB_OBJET/fem_s_direct_axi.f90 $(GAUSS_OBJ)
+	(cp $(RACINE)/FEMSUB_OBJET/fem_s_direct_axi.f90 fem_s_direct_axi.f90; \
+	$(CMP) $(OPT) fem_s_direct_axi.f90; \
+	rm fem_s_direct_axi.f90)
+
+fem_tn_axi.o: $(RACINE)/FEMSUB_OBJET/fem_tn_axi.f90 $(GAUSS_OBJ)
+	(cp $(RACINE)/FEMSUB_OBJET/fem_tn_axi.f90 fem_tn_axi.f90; \
+	$(CMP) $(OPT) fem_tn_axi.f90; \
+	rm fem_tn_axi.f90)
+
+fem_sparsekit_axi.o: $(RACINE)/FEMSUB_OBJET/fem_sparsekit_axi.f90 $(GAUSS_OBJ)
+	(cp $(RACINE)/FEMSUB_OBJET/fem_sparsekit_axi.f90 fem_sparsekit_axi.f90; \
+	$(CMP) $(OPT) fem_sparsekit_axi.f90; \
+	rm fem_sparsekit_axi.f90)
+
+st_sparsekit.o: $(RACINE)/FEMSUB/st_sparsekit.f90 
+	(cp $(RACINE)/FEMSUB/st_sparsekit.f90 st_sparsekit.f90; \
+	$(CMP) $(OPT) st_sparsekit.f90; \
+	rm st_sparsekit.f90)
+
+sub_plot.o: $(RACINE)/FEMSUB/sub_plot.f90 
+	(cp $(RACINE)/FEMSUB/sub_plot.f90 sub_plot.f90; \
+	$(CMP) $(OPT) sub_plot.f90; \
+	rm sub_plot.f90)
+
+condlim.o: ./condlim.f90
+	($(CMP) $(OPT) condlim.f90)
+
+
+post_proc.o: $(RACINE_MHD)/post_proc.f90
+	(cp $(RACINE_MHD)/post_proc.f90 post_proc.f90; \
+	$(CMP) $(OPT) post_proc.f90; \
+	rm post_proc.f90)
+
+condlim_test_conv.o: $(RACINE)/MHD_DATA_TEST_CONV/condlim_test_conv.f90
+	(cp $(RACINE)/MHD_DATA_TEST_CONV/condlim_test_conv.f90 condlim_test_conv.f90;\
+	$(CMP) $(OPT) condlim_test_conv.f90; \
+	rm condlim_test_conv.f90)
+
+fft_parallel.o: $(RACINE)/FEMSUB_OBJET/fft_parallel.f90
+	(cp $(RACINE)/FEMSUB_OBJET/fft_parallel.f90 fft_parallel.f90; \
+	$(CMP) $(OPT) fft_parallel.f90; \
+	rm fft_parallel.f90)
+
+
+solve_splib.o: $(SPLIB_DIR)/solve_splib.f90
+	(cp $(SPLIB_DIR)/solve_splib.o .; cp $(SPLIB_DIR)/solve_sp.mod  .; \
+	cp $(SPLIB_DIR)/orderings/reordering_sp.mod .)
+
+fem_tn_navier_mhd.o: $(RACINE)/FEMSUB_OBJET/fem_tn_navier_mhd.f90
+	(cp $(RACINE)/FEMSUB_OBJET/fem_tn_navier_mhd.f90 fem_tn_navier_mhd.f90; \
+	$(CMP) $(OPT) fem_tn_navier_mhd.f90; \
+	rm fem_tn_navier_mhd.f90)
+
+tn_par.o: fem_tn_navier_mhd.o $(RACINE)/FEMSUB_OBJET/tn_par.f90
+	(cp $(RACINE)/FEMSUB_OBJET/tn_par.f90 tn_par.f90; \
+	$(CMP) $(OPT) tn_par.f90; \
+	rm tn_par.f90)
+
+restart.o: $(RACINE)/FEMSUB_OBJET/restart.f90
+	(cp $(RACINE)/FEMSUB_OBJET/restart.f90 restart.f90; \
+	$(CMP) $(OPT) restart.f90; \
+	rm restart.f90)
+
+sub_ns.o: $(RACINE)/FEMSUB_OBJET/sub_ns.f90
+	(cp $(RACINE)/FEMSUB_OBJET/sub_ns.f90 sub_ns.f90; \
+	$(CMP) $(OPT) sub_ns.f90; \
+	rm sub_ns.f90)
+
+maxwell_update_time.o: $(RACINE)/FEMSUB_OBJET/maxwell_update_time.f90
+	(cp $(RACINE)/FEMSUB_OBJET/maxwell_update_time.f90 maxwell_update_time.f90; \
+	$(CMP) $(OPT) maxwell_update_time.f90; \
+	rm maxwell_update_time.f90)
+
+initialisation.o: $(RACINE)/FEMSUB_OBJET/initialisation.f90
+	(cp $(RACINE)/FEMSUB_OBJET/initialisation.f90 initialisation.f90; \
+	$(CMP) $(OPT) initialisation.f90; \
+	rm initialisation.f90)
+
+bessel.o: $(RACINE)/FEMSUB/bessel.f90
+	(cp $(RACINE)/FEMSUB/bessel.f90 bessel.f90; \
+	$(CMP) $(OPT) bessel.f90; \
+	rm bessel.f90)
+

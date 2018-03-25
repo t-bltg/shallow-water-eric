@@ -1,0 +1,45 @@
+#  rectangle.poly
+#
+#  Discussion:
+#
+#    This file describes a rectangle on [0,L]x[0,1],
+#    where L = 10.
+#
+#    The boundary markers are:
+#    1: point on the outer boundary on the left side of rectangle
+#    3: point on the outer boundary on the right side of rectangle
+#
+#  Author:
+#    Eric Tovar, 03/04/2018
+#
+#  Declare 4 vertices, 2 dimensions, 0 attributes, 1 boundary markers.
+#
+4  2  0  0
+#
+#  List the vertices by index, x, y, and boundary marker.
+#
+1 0.00000 0.00000
+2 10.00000 0.00000
+3 10.0000 1.00000
+4 0.00000 1.00000
+
+#  Declare the number of segments and the number of boundary markers.
+#
+4 1
+#
+#  List the segments (counter-closewise) by index, start and end node, and boundary marker.
+#
+#  Segments
+1     1     2     2
+2     2     3     3
+3     3     4     4
+4     4     1     1
+
+
+#  Declare the number of holes.
+0
+
+#
+#  Define a hole by giving the coordinates of one point inside it.
+#
+# 1 0.000000 -2.000000
