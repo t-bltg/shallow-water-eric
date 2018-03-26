@@ -413,9 +413,9 @@ CONTAINS
        CALL friction(un,rk)
      CASE(11) ! (Eric T.)
        CALL my_friction(un,rk)
-     CASE(12)
+     CASE(12) ! (Eric T.)
        CALL coriolis(un,rk) ! (Eric T.)
-     CASE(13)
+     CASE(13) ! (Eric T.)
        CALL mSGN_RHS(un,rk) ! (Eric T. )
        !CALL mSGN_RHS_manufactured(un,rk)
     END SELECT
@@ -496,25 +496,27 @@ CONTAINS
 
     lambda_bar = inputs%lambdaSGN*inputs%gravity*(un(1,:))
 
-    ! flux term -lambda_bar/3 eta(eta/h - 1)
+    ! flux term in momentum equation 
     DO i = 1, mesh%np
        DO p = cij(1)%ia(i), cij(1)%ia(i+1) - 1
-        DO k = 1, 1
+        DO k = 1, 2
            rk(k+1,i) = rk(k+1,i) &
-                + (1.0d0/3.0d0*lambda_bar(i)*(un(4,i)/un(1,i)) &
-                          *(un(4,i)/(un(1,i)**2) - 1.0d0))*cij(k)%aa(p)
+              + (1.0d0/3.0d0*inputs%lambdaSGN*(un(4,i)/un(1,i)) &
+              (un(4,i)/(un(1,i)**2) - 1.0d0))*cij(k)%aa(p)
         END DO
       END DO
+
       !h w from 4th equation
       DO k = 4, 4
           rk(k,i) = rk(k,i) + lumped(i) * un(5,i)
       END DO
       !- lambdaSGN* g * h (eta  /h - 1) from 5th equation
       DO k = 5, 5
-            rk(k,i) = rk(k,i) - lumped(i)*lambda_bar(i) &
+            rk(k,i) = rk(k,i) - lumped(i)*inputs%lambdaSGN &
             * (un(4,i)/(un(1,i)) - 1.0d0)
       END DO
     END DO
+
   END SUBROUTINE mSGN_RHS
 
   ! SUBROUTINE mSGN_RHS_manufactured(un,rk)
@@ -830,19 +832,19 @@ SUBROUTINE check_hmin(h)
  IMPLICIT NONE
  REAL(KIND=8), DIMENSION(:,:) :: h
  SELECT CASE(inputs%type_test)
- CASE(1,2,3,4,5,6,7,8,9,10,11,12)
+ CASE(1,2,3,4,5,6,7,8,9,10,11,12,13)
  IF (MINVAL(h(1,:))<0.d0) THEN
     WRITE(*,*) 'Min h<0, STOP', MINVAL(h)
     WRITE(*,*) 'MAXVAL(vel)', MAXVAL(ABS(velocity(1,:))), MAXVAL(ABS(velocity(2,:)))
     STOP
  END IF
-CASE(13)
-  IF (MINVAL(h(1,:))<0.d0) THEN
-     WRITE(*,*) 'Min h<0, STOP', MINVAL(h)
-     WRITE(*,*) 'MAXVAL(vel)', MAXVAL(ABS(velocity(1,:))), MAXVAL(ABS(velocity(2,:))) &
-                    , MAXVAL(ABS(velocity(3,:))), MAXVAL(ABS(velocity(4,:)))
-     STOP
-  END IF
+! CASE(13)
+!   IF (MINVAL(h(1,:))<0.d0) THEN
+!      WRITE(*,*) 'Min h<0, STOP', MINVAL(h)
+!      WRITE(*,*) 'MAXVAL(vel)', MAXVAL(ABS(velocity(1,:))), MAXVAL(ABS(velocity(2,:))) &
+!                     , MAXVAL(ABS(velocity(3,:))), MAXVAL(ABS(velocity(4,:)))
+!      STOP
+!   END IF
 END SELECT
 END SUBROUTINE check_hmin
 
