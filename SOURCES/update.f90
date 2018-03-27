@@ -496,13 +496,13 @@ CONTAINS
 
     lambda_bar = inputs%lambdaSGN*inputs%gravity*(un(1,:))
 
-    ! flux term in momentum equation 
+    ! flux term in momentum equation
     DO i = 1, mesh%np
        DO p = cij(1)%ia(i), cij(1)%ia(i+1) - 1
         DO k = 1, 2
            rk(k+1,i) = rk(k+1,i) &
-              + (1.0d0/3.0d0*inputs%lambdaSGN*(un(4,i)/un(1,i)) &
-              (un(4,i)/(un(1,i)**2) - 1.0d0))*cij(k)%aa(p)
+              + ( 1.0d0/3.0d0*inputs%lambdaSGN*(un(4,i)/un(1,i)) &
+              * (un(4,i)/(un(1,i)**2) - 1.0d0) )*cij(k)%aa(p)
         END DO
       END DO
 
@@ -512,8 +512,8 @@ CONTAINS
       END DO
       !- lambdaSGN* g * h (eta  /h - 1) from 5th equation
       DO k = 5, 5
-            rk(k,i) = rk(k,i) - lumped(i)*inputs%lambdaSGN &
-            * (un(4,i)/(un(1,i)) - 1.0d0)
+            rk(k,i) = rk(k,i) - lumped(i)*lambda_bar(i) &
+            * (un(4,i)/(un(1,i))**2 - 1.0d0)
       END DO
     END DO
 

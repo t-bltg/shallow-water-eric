@@ -1,28 +1,28 @@
 ===Name of directory for mesh file===
 '../MESHES/SGN_CANAL'
 ===Name of mesh file===
-longer-rectangle.3.FEM
+longer-rectangle.4.FEM
 ===Test case number===
 13
 ===Final time===
-4.
+8.
 ===CFL number===
 0.1d0
 ===Viscosity type (galerkin, viscous, entropy_visc, fct)===
+'entropy_visc'
 'viscous'
 'galerkin'
 'fct'
-'entropy_visc'
 ===Type of first-order viscosity===
-'type1'
+'type2'
 ===Alpha limitation? (True/False)===
-.f.
+.t.
 ===Lumping the mass matrix? (true/false)===
 .t.
 ===How many Dirichlet boundaries for h?===
 0
 ===List of Dirichlet boundaries for h?===
-1
+0
 ===How many Dirichlet boundaries for ux?===
 0
 ===List of Dirichlet boundaries for ux?===
@@ -38,4 +38,4 @@ longer-rectangle.3.FEM
 ===Type of finite element===
 1
 ===Lambda for SGN model===
-1200.0d0
+50.0d0
