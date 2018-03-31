@@ -493,15 +493,17 @@ CONTAINS
     REAL(KIND=8), DIMENSION(inputs%syst_size,mesh%np), INTENT(OUT) :: rk
     REAL(KIND=8), DIMENSION(mesh%np) :: lambda_bar
     INTEGER :: d, i, j, k, p
+    REAL(KIND=8), PARAMETER :: local_mesh = 0.0125d0/4.d0  !for longer-rectangle.3
 
-    lambda_bar = inputs%lambdaSGN*inputs%gravity*(un(1,:))
+    lambda_bar = inputs%lambdaSGN*inputs%gravity*(un(4,:))
 
     ! flux term in momentum equation
     DO i = 1, mesh%np
        DO p = cij(1)%ia(i), cij(1)%ia(i+1) - 1
         DO k = 1, 2
            rk(k+1,i) = rk(k+1,i) &
-              + ( 1.0d0/3.0d0*inputs%lambdaSGN*(un(4,i)/un(1,i)) &
+              + ( 1.0d0/3.0d0*inputs%lambdaSGN*inputs%gravity/local_mesh * &
+              (un(4,i)/un(1,i))**3.d0 &
               * (un(4,i)/(un(1,i)**2) - 1.0d0) )*cij(k)%aa(p)
         END DO
       END DO
@@ -512,7 +514,8 @@ CONTAINS
       END DO
       !- lambdaSGN* g * h (eta  /h - 1) from 5th equation
       DO k = 5, 5
-            rk(k,i) = rk(k,i) - lumped(i)*lambda_bar(i) &
+            rk(k,i) = rk(k,i) - lumped(i)*inputs%lambdaSGN*inputs%gravity &
+            *1.d0/3.d0*1.d0/local_mesh * (un(4,i)/un(1,i))**2.d0 &
             * (un(4,i)/(un(1,i))**2 - 1.0d0)
       END DO
     END DO

@@ -796,7 +796,9 @@ CONTAINS
              DO i = 1, SIZE(rr,2)
                bathi = 0.d0
                htilde = h1 + (-h1 + h2)*1.d0/(COSH(((-(D*t) + rr(1,i))*z- x0)/2.d0 )**2.d0)
-               vv(i) = MAX(htilde,0.d0) * 0.0d0
+               !vv(i) = MAX(htilde,0.d0) * 0.0d0
+               vv(i) = -htilde**2.d0 * &
+                      ((2*d*h1*(h1 - h2)*z*SINH(rr(1,i)*z))/(h1 - 2*h2 - h1*COSH(rr(1,i)*z))**2)
              END DO
        END IF
       END SELECT
