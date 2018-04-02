@@ -54,14 +54,14 @@ CONTAINS
        one_over_h = compute_one_over_h(un(1,:))
        DO n = 1, mesh%np
           velocity(1,n) = un(2,n)*one_over_h(n) ! u
-          velocity(2,n) = 0.d0                  ! v
+          velocity(2,n) = un(3,n)*one_over_h(n)*0.d0 ! v
           velocity(3,n) = un(4,n)*one_over_h(n) ! eta
           velocity(4,n) = un(5,n)*one_over_h(n) ! w
           !====
           vv(1,1,n) = velocity(1,n)*un(1,n)   ! u h
-          vv(1,2,n) = velocity(2,n)*un(1,n)   ! v h
+          vv(1,2,n) = velocity(2,n)*un(1,n)*0.d0   ! v h
           vv(2,1,n) = velocity(1,n)*un(2,n)   ! u uh
-          vv(2,2,n) = velocity(2,n)*un(2,n)   ! v uh
+          vv(2,2,n) = velocity(2,n)*un(2,n)*0.d0   ! v uh
           vv(3,1,n) = velocity(1,n)*un(3,n)*0.d0   ! u vh
           vv(3,2,n) = velocity(2,n)*un(3,n)*0.d0   ! v vh
           vv(4,1,n) = velocity(1,n)*un(4,n)   ! u eta*h
@@ -756,7 +756,7 @@ CONTAINS
           IF (t.LE.1.d-10) THEN
             DO i = 1, SIZE(rr,2)
               bathi = 0.d0
-              htilde= h1 + (-h1 + h2)*1.d0/(COSH(((-(D*t) + rr(1,i)- x0)*z)/2.d0 )**2.d0)
+              htilde= h1 + (-h1 + h2)*1.d0/(COSH(((-(D*t) + rr(1,i) - x0)*z)/2.d0 )**2.d0)
               vv(i) = max(htilde,0.d0)
             END DO
          END IF
@@ -765,7 +765,7 @@ CONTAINS
         IF (t.LE.1.d-10) THEN
           DO i = 1, SIZE(rr,2)
             bathi = 0.d0
-            htilde =  h1 + (-h1 + h2)*1.d0/(COSH(((-(D*t) + rr(1,i)- x0)*z)/2.d0 )**2.d0)
+            htilde =  h1 + (-h1 + h2)*1.d0/(COSH(((-(D*t) + rr(1,i) - x0)*z)/2.d0 )**2.d0)
             vv(i) = MAX(htilde,0.d0)
             vv(i) = vv(i) * D - h1
           END DO
@@ -775,9 +775,9 @@ CONTAINS
        !IF (t.LE.1.d-10) THEN
          DO i = 1, SIZE(rr,2)
            bathi = 0.d0
-           htilde =  h1 + (-h1 + h2)*1.d0/COSH(((-(D*t) + rr(1,i)- x0)*z)/2.d0 )**2.d0
+           htilde =  h1 + (-h1 + h2)*1.d0/COSH(((-(D*t) + rr(1,i) - x0)*z)/2.d0 )**2.d0
            vv(i) = MAX(htilde,0.d0)
-           vv(i) = vv(i)*0.d0
+           vv(i) = vv(i)* D - h1
          END DO
        !END IF
       CASE(4) ! eta*h component of flow rate r
@@ -785,7 +785,7 @@ CONTAINS
          IF (t.LE.1.d-10) THEN
            DO i = 1, SIZE(rr,2)
              bathi = 0.d0
-             htilde = h1 + (-h1 + h2)*1.d0/(COSH(((-(D*t) + rr(1,i)- x0)*z)/2.d0 )**2.d0)
+             htilde = h1 + (-h1 + h2)*1.d0/(COSH(((-(D*t) + rr(1,i) - x0)*z)/2.d0 )**2.d0)
              vv(i) = MAX(htilde,0.d0)
              vv(i) = vv(i)*vv(i)
            END DO
@@ -795,7 +795,7 @@ CONTAINS
         IF (t.LE.1.d-10) THEN
              DO i = 1, SIZE(rr,2)
                bathi = 0.d0
-               htilde = h1 + (-h1 + h2)*1.d0/(COSH(((-(D*t) + rr(1,i))*z- x0)/2.d0 )**2.d0)
+               htilde = h1 + (-h1 + h2)*1.d0/(COSH(((-(D*t) + rr(1,i) - x0)*z)/2.d0 )**2.d0)
                !vv(i) = MAX(htilde,0.d0) * 0.0d0
                vv(i) = -htilde**2.d0 * &
                       ((2*d*h1*(h1 - h2)*z*SINH(rr(1,i)*z))/(h1 - 2*h2 - h1*COSH(rr(1,i)*z))**2)
