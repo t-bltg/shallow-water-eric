@@ -796,24 +796,30 @@ CONTAINS
            vv(i) = vv(i)* 0.d0
          END DO
       CASE(4) ! eta*h component of flow rate r
-        ! for initial eta height just choose same initial height for h, see FAVRIE/GAVRILYUK paper
+         ! initial condition from FAVRIE/GAVRILYUK paper
          IF (t.LE.1.d-10) THEN
            DO i = 1, SIZE(rr,2)
              bathi = 0.d0
-             htilde = h1 + (-h1 + h2)*1.d0/(COSH(((-(D*t) + rr(1,i) - x0)*z)/2.d0 )**2.d0)
+             htilde = h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t)))**2.0d0
              vv(i) = MAX(htilde,0.d0)
              vv(i) = vv(i)*vv(i)
            END DO
-             ! currently don't know exact solution
+         ! ELSE ! exact solution from paper
+         !   DO i =1, size(rr,2)
+         !     bathi = 0.d0
+         !     htilde = h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-D*t)))**2.0d0
+         !     vv(i) = MAX(htilde,0.d0)
+         !     vv(i) = vv(i)*vv(i)
+         !   END DO
        END IF
       CASE(5) ! w*h component of flow rate r
         IF (t.LE.1.d-10) THEN
              DO i = 1, SIZE(rr,2)
                bathi = 0.d0
-               htilde = h1 + (-h1 + h2)*1.d0/(COSH(((-(D*t) + rr(1,i) - x0)*z)/2.d0 )**2.d0)
-               !vv(i) = MAX(htilde,0.d0) * 0.0d0
-               vv(i) = -htilde**2.d0 * &
-                      ((2*d*h1*(h1 - h2)*z*SINH(rr(1,i)*z))/(h1 - 2*h2 - h1*COSH(rr(1,i)*z))**2)
+               htilde = h1 + (h2 - h1)*1.d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t)))**2.d0
+               vv(i) = MAX(htilde,0.d0)
+               vv(i) = -d * h1 * ( (h2 - h1) * 1.d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t)))**2.d0 &
+               * TANH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t)) )
              END DO
        END IF
       END SELECT
