@@ -53,11 +53,12 @@ CONTAINS
 
        one_over_h = compute_one_over_h(un(1,:))
        DO n = 1, mesh%np
+          ! set up velocity vector here
           velocity(1,n) = un(2,n)*one_over_h(n) ! u
           velocity(2,n) = un(3,n)*one_over_h(n) ! v
           velocity(3,n) = un(4,n)*one_over_h(n) ! eta
           velocity(4,n) = un(5,n)*one_over_h(n) ! w
-          !====
+          ! set flux terms here without pressure 
           vv(1,1,n) = velocity(1,n)*un(1,n)   ! u h
           vv(1,2,n) = velocity(2,n)*un(1,n)   ! v h
           vv(2,1,n) = velocity(1,n)*un(2,n)   ! u uh
