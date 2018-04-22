@@ -54,20 +54,20 @@ CONTAINS
        one_over_h = compute_one_over_h(un(1,:))
        DO n = 1, mesh%np
           velocity(1,n) = un(2,n)*one_over_h(n) ! u
-          velocity(2,n) = un(3,n)*one_over_h(n)*0.d0 ! v
+          velocity(2,n) = un(3,n)*one_over_h(n) ! v
           velocity(3,n) = un(4,n)*one_over_h(n) ! eta
           velocity(4,n) = un(5,n)*one_over_h(n) ! w
           !====
           vv(1,1,n) = velocity(1,n)*un(1,n)   ! u h
-          vv(1,2,n) = velocity(2,n)*un(1,n)*0.d0   ! v h
+          vv(1,2,n) = velocity(2,n)*un(1,n)   ! v h
           vv(2,1,n) = velocity(1,n)*un(2,n)   ! u uh
-          vv(2,2,n) = velocity(2,n)*un(2,n)*0.d0   ! v uh
-          vv(3,1,n) = velocity(1,n)*un(3,n)*0.d0   ! u vh
-          vv(3,2,n) = velocity(2,n)*un(3,n)*0.d0   ! v vh
+          vv(2,2,n) = velocity(2,n)*un(2,n)   ! v uh
+          vv(3,1,n) = velocity(1,n)*un(3,n)   ! u vh
+          vv(3,2,n) = velocity(2,n)*un(3,n)   ! v vh
           vv(4,1,n) = velocity(1,n)*un(4,n)   ! u eta*h
-          vv(4,2,n) = 0.d0 ! nothing here
+          vv(4,2,n) = velocity(2,n)*un(4,n)   ! v eta*h
           vv(5,1,n) = velocity(1,n)*un(5,n)   ! u wh
-          vv(5,2,n) = 0.d0 ! nothing here
+          vv(5,2,n) = velocity(2,n)*un(5,n)   ! v wh
         END DO
     CASE DEFAULT
        WRITE(*,*) ' BUG in flux'
