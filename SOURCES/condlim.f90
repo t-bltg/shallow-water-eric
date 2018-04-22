@@ -58,7 +58,7 @@ CONTAINS
           velocity(2,n) = un(3,n)*one_over_h(n) ! v
           velocity(3,n) = un(4,n)*one_over_h(n) ! eta
           velocity(4,n) = un(5,n)*one_over_h(n) ! w
-          ! set flux terms here without pressure 
+          ! set flux terms here without pressure
           vv(1,1,n) = velocity(1,n)*un(1,n)   ! u h
           vv(1,2,n) = velocity(2,n)*un(1,n)   ! v h
           vv(2,1,n) = velocity(1,n)*un(2,n)   ! u uh
@@ -743,6 +743,7 @@ CONTAINS
           END DO
         END SELECT
     CASE(13) ! Added to include hyperbolid SGN model (Eric T., 02/2018)
+      ! here we are doing exact solitary wave solution from Favrie-Gavrilyuk paper
       ! initial constants go here
       inputs%gravity = 9.81d0
       h1 = 11.0d0 /100.d0
@@ -757,30 +758,43 @@ CONTAINS
           IF (t.LE.1.d-10) THEN
             DO i = 1, SIZE(rr,2)
               bathi = 0.d0
-              htilde= h1 + (-h1 + h2)*1.d0/(COSH(((-(D*t) + rr(1,i) - x0)*z)/2.d0 )**2.d0)
+              htilde= h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t)))**2.0d0
+              vv(i) = max(htilde,0.d0)
+            END DO
+          ELSE ! exact solution
+            DO i = 1, SIZE(rr,2)
+              bathi = 0.d0
+              htilde= h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-D*t)))**2.0d0
               vv(i) = max(htilde,0.d0)
             END DO
          END IF
+
       CASE(2) ! u*h component of flow rate q
         ! for initial velocity u
         IF (t.LE.1.d-10) THEN
           DO i = 1, SIZE(rr,2)
             bathi = 0.d0
-            htilde =  h1 + (-h1 + h2)*1.d0/(COSH(((-(D*t) + rr(1,i) - x0)*z)/2.d0 )**2.d0)
+            htilde = h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t)))**2.0d0
             vv(i) = MAX(htilde,0.d0)
             vv(i) = vv(i) * D - h1
           END DO
+        ELSE
+          DO i = 1, SIZE(rr,2)
+            bathi = 0.d0
+            htilde =  h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-D*t)))**2.0d0
+            vv(i) = MAX(htilde,0.d0)
+            vv(i) = vv(i) * D - h1
+          END DO
+
        END IF
       CASE(3) ! v*h component of flow rate q, just 0 for now
        ! for initial velocity u
-       !IF (t.LE.1.d-10) THEN
          DO i = 1, SIZE(rr,2)
            bathi = 0.d0
-           htilde =  h1 + (-h1 + h2)*1.d0/COSH(((-(D*t) + rr(1,i) - x0)*z)/2.d0 )**2.d0
+           htilde =  h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-D*t)))**2.0d0
            vv(i) = MAX(htilde,0.d0)
-           vv(i) = vv(i)* D - h1
+           vv(i) = vv(i)* 0.d0
          END DO
-       !END IF
       CASE(4) ! eta*h component of flow rate r
         ! for initial eta height just choose same initial height for h, see FAVRIE/GAVRILYUK paper
          IF (t.LE.1.d-10) THEN
