@@ -5,7 +5,7 @@ longer-rectangle.3.FEM
 ===Test case number===
 13
 ===Final time===
-8.
+7.
 ===CFL number===
 0.1d0
 ===Viscosity type (galerkin, viscous, entropy_visc, fct)===

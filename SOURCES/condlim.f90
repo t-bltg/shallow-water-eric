@@ -755,38 +755,38 @@ CONTAINS
       SELECT CASE(k)
       CASE(1) ! h water height
           ! for initial condition on water height
-          IF (t.LE.1.d-10) THEN
+          !IF (t.LE.1.d-10) THEN
             DO i = 1, SIZE(rr,2)
               bathi = 0.d0
-              htilde= h1 + (h2 - h1)*1.0d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.0d0
+              htilde= h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.0d0)
               vv(i) = max(htilde,0.d0)
+          !  END DO
+          ! ELSE ! exact solution
+          !   DO i = 1, SIZE(rr,2)
+          !     bathi = 0.d0
+          !     htilde= h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.0d0)
+          !     vv(i) = max(htilde,0.d0)
             END DO
-          ELSE ! exact solution
-            DO i = 1, SIZE(rr,2)
-              bathi = 0.d0
-              htilde= h1 + (h2 - h1)*1.0d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.0d0
-              vv(i) = max(htilde,0.d0)
-            END DO
-         END IF
+         !END IF
 
       CASE(2) ! u*h component of flow rate q
         ! for initial velocity u
-        IF (t.LE.1.d-10) THEN
+        !IF (t.LE.1.d-10) THEN
           DO i = 1, SIZE(rr,2)
             bathi = 0.d0
             htilde = h1 + (h2 - h1)*1.0d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.0d0
             vv(i) = MAX(htilde,0.d0)
             vv(i) = vv(i) * D - h1
           END DO
-        ELSE
-          DO i = 1, SIZE(rr,2)
-            bathi = 0.d0
-            htilde =  h1 + (h2 - h1)*1.0d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.0d0
-            vv(i) = MAX(htilde,0.d0)
-            vv(i) = vv(i) * D - h1
-          END DO
+        !ELSE
+          ! DO i = 1, SIZE(rr,2)
+          !   bathi = 0.d0
+          !   htilde =  h1 + (h2 - h1)*1.0d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.0d0
+          !   vv(i) = MAX(htilde,0.d0)
+          !   vv(i) = vv(i) * D - h1
+          ! END DO
 
-       END IF
+       !END IF
       CASE(3) ! v*h component of flow rate q, just 0 for now
        ! for initial velocity u
          DO i = 1, SIZE(rr,2)
@@ -811,7 +811,7 @@ CONTAINS
                bathi = 0.d0
                htilde = h1 + (h2 - h1)*1.d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.d0
                vv(i) = MAX(htilde,0.d0)
-               vv(i) = -d * h1 * ( (h2 - h1) * 1.d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.d0 &
+               vv(i) = -d * h1 * ( (h2 - h1) * 1.d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.d0) &
                * TANH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t)) )
              END DO
        END IF
@@ -889,7 +889,7 @@ CONTAINS
     sqr = SQRT(inputs%gravity*ABS(hr))
 
     SELECT CASE(inputs%type_test)
-    CASE(1,2,3,4,5,6,7,8,9,10,11,12,13) ! added case 11 because I think we need it (Eric T.)
+    CASE(1,2,3,4,5,6,7,8,9,10,11,12,13) 
        !IF (hl.LE.inputs%htiny .AND. hr.LE.inputs%htiny) THEN
        !   lambda = 0.d0
        !   RETURN
