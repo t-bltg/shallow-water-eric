@@ -1,11 +1,11 @@
 ===Name of directory for mesh file===
 '../MESHES/SGN_CANAL'
 ===Name of mesh file===
-longer-rectangle.4.FEM
+longer-rectangle.3.FEM
 ===Test case number===
 13
 ===Final time===
-8.
+14.
 ===CFL number===
 0.1d0
 ===Viscosity type (galerkin, viscous, entropy_visc, fct)===
@@ -22,15 +22,15 @@ longer-rectangle.4.FEM
 ===How many Dirichlet boundaries for h?===
 0
 ===List of Dirichlet boundaries for h?===
-0
+1 2 3 4
 ===How many Dirichlet boundaries for ux?===
 0
 ===List of Dirichlet boundaries for ux?===
-1
+1 2 3 4
 ===How many Dirichlet boundaries for uy?===
 0
 ===List of Dirichlet boundaries for uy?===
-1
+1 2 3 4
 ===Number of subdomains in the mesh===
 1
 ===List of subdomain in the mesh===
@@ -40,4 +40,4 @@ longer-rectangle.4.FEM
 ===Lambda for SGN model===
 5.0d0
 ===Local mesh size===
-50.0d0
+0.5d0

@@ -748,7 +748,7 @@ CONTAINS
       inputs%gravity = 9.81d0
       h1 = 11.0d0 /100.d0
       h2 = 12.0d0 /100.d0
-      x0 = 12.d0  ! we want largest solitary wave height starting here
+      x0 = 2.d0  ! we want largest solitary wave height starting here
       D = SQRT(inputs%gravity * h2) ! constant wave velocity
       z = SQRT( ( 3.0d0 * (h2 - h1) / (h2 * h1**2.0d0) ) )
 
@@ -758,13 +758,13 @@ CONTAINS
           IF (t.LE.1.d-10) THEN
             DO i = 1, SIZE(rr,2)
               bathi = 0.d0
-              htilde= h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t)))**2.0d0
+              htilde= h1 + (h2 - h1)*1.0d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.0d0
               vv(i) = max(htilde,0.d0)
             END DO
           ELSE ! exact solution
             DO i = 1, SIZE(rr,2)
               bathi = 0.d0
-              htilde= h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-D*t)))**2.0d0
+              htilde= h1 + (h2 - h1)*1.0d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.0d0
               vv(i) = max(htilde,0.d0)
             END DO
          END IF
@@ -774,14 +774,14 @@ CONTAINS
         IF (t.LE.1.d-10) THEN
           DO i = 1, SIZE(rr,2)
             bathi = 0.d0
-            htilde = h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t)))**2.0d0
+            htilde = h1 + (h2 - h1)*1.0d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.0d0
             vv(i) = MAX(htilde,0.d0)
             vv(i) = vv(i) * D - h1
           END DO
         ELSE
           DO i = 1, SIZE(rr,2)
             bathi = 0.d0
-            htilde =  h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-D*t)))**2.0d0
+            htilde =  h1 + (h2 - h1)*1.0d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.0d0
             vv(i) = MAX(htilde,0.d0)
             vv(i) = vv(i) * D - h1
           END DO
@@ -791,7 +791,7 @@ CONTAINS
        ! for initial velocity u
          DO i = 1, SIZE(rr,2)
            bathi = 0.d0
-           htilde =  h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-D*t)))**2.0d0
+           htilde =  h1 + (h2 - h1)*1.0d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.0d0
            vv(i) = MAX(htilde,0.d0)
            vv(i) = vv(i)* 0.d0
          END DO
@@ -800,25 +800,18 @@ CONTAINS
          IF (t.LE.1.d-10) THEN
            DO i = 1, SIZE(rr,2)
              bathi = 0.d0
-             htilde = h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t)))**2.0d0
+             htilde = h1 + (h2 - h1)*1.0d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.0d0
              vv(i) = MAX(htilde,0.d0)
              vv(i) = vv(i)*vv(i)
            END DO
-         ! ELSE ! exact solution from paper
-         !   DO i =1, size(rr,2)
-         !     bathi = 0.d0
-         !     htilde = h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-D*t)))**2.0d0
-         !     vv(i) = MAX(htilde,0.d0)
-         !     vv(i) = vv(i)*vv(i)
-         !   END DO
-       END IF
+         END IF
       CASE(5) ! w*h component of flow rate r
         IF (t.LE.1.d-10) THEN
              DO i = 1, SIZE(rr,2)
                bathi = 0.d0
-               htilde = h1 + (h2 - h1)*1.d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t)))**2.d0
+               htilde = h1 + (h2 - h1)*1.d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.d0
                vv(i) = MAX(htilde,0.d0)
-               vv(i) = -d * h1 * ( (h2 - h1) * 1.d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t)))**2.d0 &
+               vv(i) = -d * h1 * ( (h2 - h1) * 1.d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.d0 &
                * TANH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t)) )
              END DO
        END IF

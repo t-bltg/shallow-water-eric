@@ -500,10 +500,10 @@ CONTAINS
     ! we define s, psi and pTilde separately to make our lives easier
 
     DO i = 1, mesh%np
-      psi(i) = 4.d0 * ((un(4,i)/un(1,i)) - 1.d0/(un(4,i)/un(1,i)))
-      s(i) = 3.d0*paper_constant*(un(4,i)/un(1,i))**2.d0 * psi(i)
-      pTilde(i) = paper_constant * un(1,i)**3.d0 * (2.d0 - 8.d0*(un(4,i)/un(1,i))**2.d0  &
-                +  6.d0 * (un(4,i)/un(1,i))**4.d0 )
+      psi(i) = 4.d0 * ((un(4,i)/un(1,i)**2.d0) - 1.d0/(un(4,i)/un(1,i)**2.d0) )
+      s(i) = 3.d0*paper_constant*(un(4,i)/un(1,i)**2.d0) **2.d0 * psi(i)
+      pTilde(i) = paper_constant * un(1,i)**3.d0 * (2.d0 - 8.d0*(un(4,i)/un(1,i)**2.d0)**2.d0  &
+                +  6.d0 * (un(4,i)/un(1,i)**2.d0)**4.d0 )
 
        DO p = cij(1)%ia(i), cij(1)%ia(i+1) - 1
         DO k = 1, 2
