@@ -38,4 +38,6 @@ longer-rectangle.4.FEM
 ===Type of finite element===
 1
 ===Lambda for SGN model===
+5.0d0
+===Local mesh size===
 50.0d0

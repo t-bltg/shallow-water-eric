@@ -417,7 +417,6 @@ CONTAINS
        CALL coriolis(un,rk) ! (Eric T.)
      CASE(13) ! (Eric T.)
        CALL mSGN_RHS(un,rk) ! (Eric T. )
-       !CALL mSGN_RHS_manufactured(un,rk)
     END SELECT
 
   END SUBROUTINE smb_1
@@ -491,20 +490,24 @@ CONTAINS
     IMPLICIT NONE
     REAL(KIND=8), DIMENSION(inputs%syst_size,mesh%np)  :: un
     REAL(KIND=8), DIMENSION(inputs%syst_size,mesh%np), INTENT(OUT) :: rk
-    REAL(KIND=8), DIMENSION(mesh%np) :: lambda_bar
+    REAL(KIND=8), DIMENSION(mesh%np) :: s, psi, pTilde
+    REAL(KIND=8) :: paper_constant
     INTEGER :: d, i, j, k, p
-    REAL(KIND=8), PARAMETER :: local_mesh = 0.0125d0/4.d0  !for longer-rectangle.3
 
-    lambda_bar = inputs%lambdaSGN*inputs%gravity*(un(4,:))
+    paper_constant = inputs%lambdaSGN * inputs%gravity/(3.d0 * inputs%localMeshSize)
 
-    ! flux term in momentum equation
+    ! rest of pressure term that's not 1/2 g h^2 so just pTilde (see our paper)
+    ! we define s, psi and pTilde separately to make our lives easier
+
     DO i = 1, mesh%np
+      psi(i) = 4.d0 * ((un(4,i)/un(1,i)) - 1.d0/(un(4,i)/un(1,i)))
+      s(i) = 3.d0*paper_constant*(un(4,i)/un(1,i))**2.d0 * psi(i)
+      pTilde(i) = paper_constant * un(1,i)**3.d0 * (2.d0 - 8.d0*(un(4,i)/un(1,i))**2.d0  &
+                +  6.d0 * (un(4,i)/un(1,i))**4.d0 )
+
        DO p = cij(1)%ia(i), cij(1)%ia(i+1) - 1
         DO k = 1, 2
-           rk(k+1,i) = rk(k+1,i) &
-              + ( 1.0d0/3.0d0*inputs%lambdaSGN*inputs%gravity/local_mesh * &
-              (un(4,i)/un(1,i))**3.d0 &
-              * (un(4,i)/(un(1,i)**2) - 1.0d0) )*cij(k)%aa(p)
+           rk(k+1,i) = rk(k+1,i) + ( pTilde(i) )*cij(k)%aa(p)
         END DO
       END DO
 
@@ -512,67 +515,14 @@ CONTAINS
       DO k = 4, 4
           rk(k,i) = rk(k,i) + lumped(i) * un(5,i)
       END DO
-      !- lambdaSGN* g * h (eta  /h - 1) from 5th equation
+      ! - s term from last equation
       DO k = 5, 5
-            rk(k,i) = rk(k,i) - lumped(i)*inputs%lambdaSGN*inputs%gravity &
-            *1.d0/3.d0*1.d0/local_mesh * (un(4,i)/un(1,i))**2.d0 &
-            * (un(4,i)/(un(1,i))**2 - 1.0d0)
+            rk(k,i) = rk(k,i) - lumped(i)*s(i)
       END DO
     END DO
 
   END SUBROUTINE mSGN_RHS
 
-  ! SUBROUTINE mSGN_RHS_manufactured(un,rk)
-  !   USE mesh_handling
-  !   USE boundary_conditions
-  !   IMPLICIT NONE
-  !   REAL(KIND=8), DIMENSION(inputs%syst_size,mesh%np)  :: un
-  !   REAL(KIND=8), DIMENSION(inputs%syst_size,mesh%np), INTENT(OUT) :: rk
-  !   INTEGER :: i, j, k, p
-  !   REAL(KIND=8) :: h1, h2, z, D
-  !   inputs%gravity = 9.81d0
-  !   h1 = 1.0d0 /5.d0
-  !   h2 = 1.8d0 /5.d0
-  !   D = SQRT(inputs%gravity * h2) ! constant wave velocity
-  !   z = SQRT( ( 3.0d0 * (h2 - h1) / (h2 * h1**2.0d0) ) )
-  !
-  !   ! first equation, manufactured solution RHS source term
-  !   DO i = 1, mesh%np
-  !          rk(1,i) = rk(1,i) + 0.d0
-  !   END DO
-  !
-  !   ! second equation, manufactured solution RHS source term
-  !   DO i = 1, mesh%np
-  !          rk(2,i) = rk(2,i) +  &
-  !          ( ((h1 - h2)*z*((6.d0*h1*(inputs%gravity - (d**2.d0*h1)/(h1 + (-h1 + h2)*Cos(((-(d*t) + &
-  !           mesh%rr(1,i))*z)/2.d0))**2.d0) + (2.d0*inputs%gravity*(h1 - h2)* &
-  !           inputs%lambdaSGN*Sin((d*t*z)/2.d0))/d**1.5d0)* &
-  !              -Sin(((-(d*t) + mesh%rr(1,i))*z)/2.d0) + &
-  !              3.d0*inputs%gravity*(-h1 + h2)*Sin((-(d*t) &
-  !              + mesh%rr(1,i))*z)))/12.d0 )
-  !   END DO
-  !
-  !   ! third equation, manufactured solution RHS source term
-  !   DO i = 1, mesh%np
-  !          rk(3,i) = rk(3,i) + 0.d0
-  !   END DO
-  !
-  !   ! fourth equation, manufactured solution RHS source term
-  !   DO i = 1, mesh%np
-  !          rk(4,i) = rk(4,i) + ( ((h1 - h2)*((-h1 + (h1 - h2)*Cos(((-(d*t) + mesh%rr(1,i))*z)/2.d0))* &
-  !    -       (z*Cos((d*t*z)/2.d0) + 2.d0*Sqrt(d)*Sin((mesh%rr(1,i)*z)/2.d0)) + &
-  !    -      Sqrt(d)*(h1*(2.d0 - d*z)*Sin(((-(d*t) + mesh%rr(1,i))*z)/2.d0) + &
-  !    -         (-h1 + h2)*Sin((-(d*t) + mesh%rr(1,i))*z))))/(2.d0*Sqrt(d)) )
-  !   END DO
-  !
-  !   ! fifth equation, manufactured solution RHS source term
-  !   DO i = 1,mesh%np
-  !     rk(5,i) = rk(5,i) + (((h1 - h2)*(d**2.5d0*z*(h1 + (-h1 + h2)*Cos((mesh%rr(1,i)*z)/2.d0)) &
-  !     *Cos(((-(d*t) + mesh%rr(1,i))*z)/2.d0) - 2.d0*inputs%gravity*inputs%lambdaSGN &
-  !     *Sin((d*t*z)/2.d0)))/(2.d0*d**1.5d0))
-  !
-  !   END DO
-  ! END SUBROUTINE mSGN_RHS_manufactured
 
   SUBROUTINE smb_2_roundoff(un,rk)
     USE mesh_handling
