@@ -189,7 +189,7 @@ CONTAINS
     REAL(KIND=8), DIMENSION(mesh%np)                 :: zero
     REAL(KIND=8) :: err, errb, norm, normb
     SELECT CASE(inputs%type_test)
-    CASE(3,4,5,6,7,11,12) ! added case 11 and 12 (Eric T.)
+    CASE(3,4,5,6,7,11,12,13) ! added case 11 and 12 (Eric T.)
        CALL r_gauss(rr_gauss)
        uexact = sol_anal(1,rr_gauss,inputs%time)
        zero = 0.d0
@@ -218,7 +218,7 @@ CONTAINS
        uexact = sol_anal(3,rr_gauss,inputs%time)
        CALL ns_anal_l1(mesh, un(3,:), uexact, errb)
        CALL ns_anal_l1(mesh, zero, uexact, normb)
-       WRITE(*,*) ' Relative L1 error on q (Gaussian)', (err+errb)/(norm+normb)
+       !WRITE(*,*) ' Relative L1 error on q (Gaussian)', (err+errb)/(norm+normb)
        !hh = sol_anal(2,mesh%rr,inputs%time)
        !CALL ns_l1 (mesh, hh-un(2,:), err)
        !CALL ns_l1 (mesh, hh, norm)
@@ -233,7 +233,7 @@ CONTAINS
        uexact = sol_anal(3,rr_gauss,inputs%time)
        CALL ns_anal_0(mesh, un(3,:), uexact, err)
        CALL ns_anal_0(mesh, zero, uexact, normb)
-       WRITE(*,*) ' Relative L2 error on q (Gaussian)', (err+errb)/(norm+normb)
+       !WRITE(*,*) ' Relative L2 error on q (Gaussian)', (err+errb)/(norm+normb)
        !hh = sol_anal(2,mesh%rr,inputs%time)
        !CALL ns_0 (mesh, hh-un(2,:), err)
        !CALL ns_0 (mesh, hh, norm)

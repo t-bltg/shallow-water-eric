@@ -5,7 +5,7 @@ longer-rectangle.3.FEM
 ===Test case number===
 13
 ===Final time===
-14.
+8.
 ===CFL number===
 0.1d0
 ===Viscosity type (galerkin, viscous, entropy_visc, fct)===
@@ -40,4 +40,4 @@ longer-rectangle.3.FEM
 ===Lambda for SGN model===
 5.0d0
 ===Local mesh size===
-0.5d0
+0.0125d0

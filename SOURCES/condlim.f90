@@ -748,7 +748,7 @@ CONTAINS
       inputs%gravity = 9.81d0
       h1 = 11.0d0 /100.d0
       h2 = 12.0d0 /100.d0
-      x0 = 2.d0  ! we want largest solitary wave height starting here
+      x0 = 4.d0  ! we want largest solitary wave height starting here
       D = SQRT(inputs%gravity * h2) ! constant wave velocity
       z = SQRT( ( 3.0d0 * (h2 - h1) / (h2 * h1**2.0d0) ) )
 

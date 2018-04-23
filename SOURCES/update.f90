@@ -490,7 +490,7 @@ CONTAINS
     IMPLICIT NONE
     REAL(KIND=8), DIMENSION(inputs%syst_size,mesh%np)  :: un
     REAL(KIND=8), DIMENSION(inputs%syst_size,mesh%np), INTENT(OUT) :: rk
-    REAL(KIND=8), DIMENSION(mesh%np) :: s, psi, pTilde
+    REAL(KIND=8), DIMENSION(mesh%np) :: s, psi, pTilde, x
     REAL(KIND=8) :: paper_constant
     INTEGER :: d, i, j, k, p
 
@@ -500,14 +500,20 @@ CONTAINS
     ! we define s, psi and pTilde separately to make our lives easier
 
     DO i = 1, mesh%np
-      psi(i) = 4.d0 * ((un(4,i)/un(1,i)**2.d0) - 1.d0/(un(4,i)/un(1,i)**2.d0) )
-      s(i) = 3.d0*paper_constant*(un(4,i)/un(1,i)**2.d0) **2.d0 * psi(i)
-      pTilde(i) = paper_constant * un(1,i)**3.d0 * (2.d0 - 8.d0*(un(4,i)/un(1,i)**2.d0)**2.d0  &
-                +  6.d0 * (un(4,i)/un(1,i)**2.d0)**4.d0 )
 
+      x(i) = un(4,i)/un(1,i)**2.d0
+
+      psi(i) = 4.d0 * (x(i) - 1.d0/x(i))
+
+      s(i) = 3.d0*paper_constant * (un(4,i)/un(1,i))**2.d0 * psi(i)
+
+      pTilde(i) = paper_constant * un(1,i)**3.d0 *  &
+                                    (2.d0 - 8.d0 * x(i)**2.d0 + 6.d0 * x(i)**4.d0)
+
+       ! update momentum equations here
        DO p = cij(1)%ia(i), cij(1)%ia(i+1) - 1
-        DO k = 1, 2
-           rk(k+1,i) = rk(k+1,i) + ( pTilde(i) )*cij(k)%aa(p)
+        DO k = 1, k_dim
+           rk(k+1,i) = rk(k+1,i) + pTilde(i)*cij(k)%aa(p)
         END DO
       END DO
 
@@ -517,7 +523,7 @@ CONTAINS
       END DO
       ! - s term from last equation
       DO k = 5, 5
-            rk(k,i) = rk(k,i) - lumped(i)*s(i)
+            rk(k,i) = rk(k,i) - lumped(i) * s(i)
       END DO
     END DO
 
