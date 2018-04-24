@@ -807,6 +807,7 @@ SUBROUTINE check_hmin(h)
 END SELECT
 END SUBROUTINE check_hmin
 
+
 SUBROUTINE entropy_residual(un)
  USE mesh_handling
  !USE pardiso_solve
