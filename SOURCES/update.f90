@@ -503,12 +503,12 @@ CONTAINS
 
       x(i) = un(4,i)/un(1,i)**2.d0
 
-      psi(i) = 4.d0 * (x(i) - 1.d0/x(i))
+      psi(i) = 12.d0 * (x(i)-1.d0)
 
       s(i) = 3.d0*paper_constant * (un(4,i)/un(1,i))**2.d0 * psi(i)
 
-      pTilde(i) = paper_constant * un(1,i)**3.d0 *  &
-                                    (2.d0 - 8.d0 * x(i)**2.d0 + 6.d0 * x(i)**4.d0)
+      pTilde(i) = paper_constant * un(1,i)**3.d0 &
+            * (2.d0 + 4.d0 * x(i)**3.d0 - 6.d0*x(i)**4.d0)
 
        ! update momentum equations here
        DO p = cij(1)%ia(i), cij(1)%ia(i+1) - 1

@@ -1,7 +1,8 @@
 ===Name of directory for mesh file===
 '../MESHES/SGN_CANAL'
 ===Name of mesh file===
-longer-rectangle.3.FEM
+longer-rectangle.4.FEM
+longer-rectangle.5.FEM
 ===Test case number===
 13
 ===Final time===
@@ -28,7 +29,7 @@ longer-rectangle.3.FEM
 ===List of Dirichlet boundaries for ux?===
 1 2 3 4
 ===How many Dirichlet boundaries for uy?===
-0
+4
 ===List of Dirichlet boundaries for uy?===
 1 2 3 4
 ===Number of subdomains in the mesh===
@@ -38,6 +39,7 @@ longer-rectangle.3.FEM
 ===Type of finite element===
 1
 ===Lambda for SGN model===
-5.0d0
+9.0d0
 ===Local mesh size===
-0.0125d0
+0.003125d0
+0.00078125
