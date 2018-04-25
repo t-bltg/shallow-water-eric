@@ -494,6 +494,7 @@ CONTAINS
     REAL(KIND=8) :: paper_constant
     INTEGER :: d, i, j, k, p
 
+
     paper_constant = inputs%lambdaSGN * inputs%gravity/(3.d0 * inputs%localMeshSize)
 
     ! rest of pressure term that's not 1/2 g h^2 so just pTilde (see our paper)
