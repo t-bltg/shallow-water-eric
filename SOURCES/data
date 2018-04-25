@@ -1,17 +1,17 @@
 ===Name of directory for mesh file===
 '../MESHES/SGN_CANAL'
 ===Name of mesh file===
-rectangle.4.FEM
+rectangle.5.FEM
 ===Test case number===
 13
 ===Final time===
 5.
 ===CFL number===
-0.05d0
+0.08d0
 ===Viscosity type (galerkin, viscous, entropy_visc, fct)===
+'entropy_visc'
 'viscous'
 'galerkin'
-'entropy_visc'
 'fct'
 ===Type of first-order viscosity===
 'type2'
@@ -40,4 +40,4 @@ rectangle.4.FEM
 ===Lambda for SGN model===
 9.0d0
 ===Local mesh size===
-0.0125d0
+0.00625d0

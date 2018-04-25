@@ -507,10 +507,9 @@ CONTAINS
 
       s(i) = 3.d0*paper_constant * (un(4,i)/un(1,i))**2.d0 * psi(i)
 
-      pTilde(i) = -paper_constant * un(1,i)**3.d0 &
+      pTilde(i) = paper_constant * un(1,i)**3.d0 &
             * (2.d0 + 4.d0 * x(i)**3.d0 - 6.d0*x(i)**4.d0)
-      ! pTilde(i) = paper_constant * un(1,i)**3.d0 &
-      !         * (2.d0 -20.d0 * x(i)**3.d0 + 18.d0 * x(i)**4.d0)
+
 
        ! update momentum equations here
        DO p = cij(1)%ia(i), cij(1)%ia(i+1) - 1
@@ -527,6 +526,7 @@ CONTAINS
       DO k = 5, 5
             rk(k,i) = rk(k,i) - lumped(i) * s(i)
       END DO
+
     END DO
 
   END SUBROUTINE mSGN_RHS
