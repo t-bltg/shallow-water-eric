@@ -10,5 +10,5 @@
 /Users/eric/Library/Mobile\ Documents/com~apple~CloudDocs/Texas\ A\&M/Math/spring17NumMthdsLab/triangle/triangle -npq28ea0.025  rectangle.2.poly
 /Users/eric/Library/Mobile\ Documents/com~apple~CloudDocs/Texas\ A\&M/Math/spring17NumMthdsLab/triangle/triangle -npq28ea0.0125 rectangle.3.poly
 /Users/eric/Library/Mobile\ Documents/com~apple~CloudDocs/Texas\ A\&M/Math/spring17NumMthdsLab/triangle/triangle -npq28ea0.00625 rectangle.4.poly
-/Users/eric/Library/Mobile\ Documents/com~apple~CloudDocs/Texas\ A\&M/Math/spring17NumMthdsLab/triangle/triangle -npq28ea0.003125 rectangle.4.poly
+/Users/eric/Library/Mobile\ Documents/com~apple~CloudDocs/Texas\ A\&M/Math/spring17NumMthdsLab/triangle/triangle -npq28ea0.003125 rectangle.5.poly
 #/Users/eric/Library/Mobile\ Documents/com~apple~CloudDocs/Texas\ A\&M/Math/springPatty17/triangle/triangle -pq28ea0.0003125 square.3.poly

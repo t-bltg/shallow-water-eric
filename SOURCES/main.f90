@@ -28,7 +28,7 @@ PROGRAM shallow_water
   ALLOCATE(rk(inputs%syst_size,mesh%np),un(inputs%syst_size,mesh%np),&
        ui(inputs%syst_size,mesh%np),uo(inputs%syst_size,mesh%np),hmovie(mesh%np))
   inputs%time =0.d0
-  CALL init(un) ! at this step, un(2:3,:) = 0 (Eric T.)
+  CALL init(un)
   hmax0 = MAXVAL(un(1,:))
   CALL plot_scalar_field(mesh%jj, mesh%rr, bath, 'bath.plt')
   CALL plot_scalar_field(mesh%jj, mesh%rr, un(1,:), 'hinit.plt')
@@ -189,7 +189,7 @@ CONTAINS
     REAL(KIND=8), DIMENSION(mesh%np)                 :: zero
     REAL(KIND=8) :: err, errb, norm, normb
     SELECT CASE(inputs%type_test)
-    CASE(3,4,5,6,7,11,12,13) ! added case 11 and 12 (Eric T.)
+    CASE(3,4,5,6,7,11,12,13) 
        CALL r_gauss(rr_gauss)
        uexact = sol_anal(1,rr_gauss,inputs%time)
        zero = 0.d0

@@ -516,6 +516,7 @@ CONTAINS
        DO p = cij(1)%ia(i), cij(1)%ia(i+1) - 1
         DO k = 1, k_dim
            rk(k+1,i) = rk(k+1,i) - pTilde(i)*cij(k)%aa(p)
+           ! for 1D on 2D mesh
         END DO
       END DO
 
