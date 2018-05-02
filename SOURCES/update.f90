@@ -123,6 +123,7 @@ CONTAINS
        ENDDO
     ENDDO
 
+
     !===entropy viscosity matrix
     CALL st_csr(mesh%jj, resij%ia, resij%ja)
     ALLOCATE(resij%aa(SIZE(resij%ja)))
@@ -496,6 +497,11 @@ CONTAINS
 
 
     paper_constant = inputs%lambdaSGN * inputs%gravity/(3.d0 * inputs%localMeshSize)
+    ! WRITE(*,*) 'this is lambdaSGN', inputs%lambdaSGN
+    ! WRITE(*,*) 'this is local mesh', inputs%localMeshSize
+    ! WRITE(*,*) 'this is gravity', inputs%gravity
+    ! WRITE(*,*) 'this is paper_constant', paper_constant
+    ! STOP
 
     ! rest of pressure term that's not 1/2 g h^2 so just pTilde (see our paper)
     ! we define s, psi and pTilde separately to make our lives easier
@@ -509,14 +515,14 @@ CONTAINS
       s(i) = 3.d0*paper_constant * (un(4,i)/un(1,i))**2.d0 * psi(i)
 
       pTilde(i) = paper_constant * un(1,i)**3.d0 &
-            * (2.d0 + 4.d0 * x(i)**3.d0 - 6.d0*x(i)**4.d0)
+            * (2.d0 + 4.d0 * (x(i)**3.d0) - 6.d0*(x(i)**4.d0))
 
 
        ! update momentum equations here
+
        DO p = cij(1)%ia(i), cij(1)%ia(i+1) - 1
-        DO k = 1, k_dim
+        DO k = 1, k_dim ! only doing 2D in 1D setting
            rk(k+1,i) = rk(k+1,i) - pTilde(i)*cij(k)%aa(p)
-           ! for 1D on 2D mesh
         END DO
       END DO
 

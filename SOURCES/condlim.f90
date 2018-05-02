@@ -2,7 +2,7 @@ MODULE boundary_conditions
   !in 2D
   !11=Paraboloid + friction (Eric T.)
   !12=Paraboloid + coriolis force (Eric T.)
-  !13=Hyperbolic SGN model (Eric T. )
+  !13=modified SGN model (Eric T. )
   USE input_data
   REAL(KIND=8), DIMENSION(:), ALLOCATABLE :: bath
   REAL(KIND=8), DIMENSION(:,:), ALLOCATABLE :: velocity
@@ -95,7 +95,8 @@ CONTAINS
     REAL(KIND=8), DIMENSION(:,:), INTENT(OUT) :: un
     INTEGER :: i, k
     REAL(KIND=8) :: ray1, ray2, ray3, scale, h0, a, hL, eta, omega, &
-         hcone, rcone, scone, htop, radius, bx, q0, p, kappa, s, h1, h2, z, D
+         hcone, rcone, scone, htop, radius, bx, q0, p, kappa, s, h1, h2, z, D_wave, &
+         x0
     !===For malpasset
     INTEGER, DIMENSION(3,mesh%me) :: jj_old
     REAL(KIND=8), DIMENSION(mesh%np) :: bath_old
@@ -104,8 +105,11 @@ CONTAINS
     ALLOCATE(bath(mesh%np))
     ALLOCATE(one_over_h(mesh%np))
     ALLOCATE(regul_h(mesh%np))
-    !ALLOCATE(velocity(k_dim,mesh%np)) !this is original
-    ALLOCATE(velocity(4,mesh%np)) ! for modified hyperbolic SGN model, u v eta w
+    IF (inputs%type_test==13) THEN
+      ALLOCATE(velocity(k_dim + 2,mesh%np)) ! for modified SGN model, u v eta w
+    ELSE
+      ALLOCATE(velocity(k_dim,mesh%np)) !this is original
+    END IF
 
     !===
     SELECT CASE(inputs%type_test)
@@ -210,12 +214,13 @@ CONTAINS
         bath = -h0*(1.d0-((mesh%rr(1,:)-hL/2.d0)**2+(mesh%rr(2,:)-hL/2.d0)**2)/a**2)
     CASE(13) ! modified hyperbolic SGN model (Eric T., 2/26/2018)
          inputs%gravity = 9.81d0
-         h1 = 11.d0 / 100.0d0
-         h2 = 12.d0 / 100.0d0
+         h1 = 10.d0 / 100.0d0
+         h2 = 11.d0 / 100.0d0
+         x0 = 2.75d0
          max_water_h = h2
          bath = 0.d0
-         D = SQRT(inputs%gravity * h2) ! constant wave velocity
-         z = SQRT( (3.d0 * (h2 - h1) / (h2 * h1**2.d0)) )
+         D_wave = SQRT(inputs%gravity * h2) ! constant wave velocity
+         z = SQRT( (3.d0 * (h2 - h1)) / (h2 * h1**2.d0) )
          DO i = 1, mesh%np
            bath(i) = 0.d0
          END DO
@@ -226,6 +231,7 @@ CONTAINS
     END SELECT
 
     inputs%htiny=inputs%epsilon*max_water_h
+    ! looks like this is where things actually get initialized
     DO k = 1, inputs%syst_size
        un(k,:) = sol_anal(k,mesh%rr,inputs%time)
     END DO
@@ -314,7 +320,7 @@ CONTAINS
          theta, Rcard, Scard, Tcard, Qcard, Dcard, tpio3, fpio3, a, omega, eta, h0, bernoulli, &
          xshock, h_pre_shock, h_post_shock, bath_shock, bathi, Ber_pre, Ber_post, &
          alpha, beta, chi, vel, xs, hcone, htop, radius, rcone, scone, bx, kappa, &
-         s, htilde, p, f, delta, w_star, den, gamma, h1, h2, lambdaSGN, z
+         s, htilde, p, f, delta, w_star, den, gamma, h1, h2, lambdaSGN, z, D_wave
     !===Malpasset
     REAL(KIND=8), DIMENSION(SIZE(rr,2)) :: h_old
     !===
@@ -749,8 +755,8 @@ CONTAINS
       h1 = 10.d0 / 100.0d0
       h2 = 11.d0 / 100.0d0
       x0 = 2.75d0  ! we want largest solitary wave height starting here
-      D = SQRT(inputs%gravity * h2) ! constant wave velocity
-      z = SQRT( ( 3.0d0 * (h2 - h1) / (h2 * h1**2.0d0) ) )
+      D_wave = SQRT(inputs%gravity * h2) ! constant wave velocity
+      z = SQRT( ( 3.0d0 * (h2 - h1)) / (h2 * h1**2.0d0) )
 
       SELECT CASE(k)
       CASE(1) ! h water height
@@ -758,7 +764,7 @@ CONTAINS
           !IF (t.LE.1.d-10) THEN
             DO i = 1, SIZE(rr,2)
               bathi = 0.d0
-              htilde= h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.0d0)
+              htilde= h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D_wave*t))**2.0d0)
               vv(i) = max(htilde,0.d0)
           !  END DO
           ! ELSE ! exact solution
@@ -774,16 +780,16 @@ CONTAINS
         !IF (t.LE.1.d-10) THEN
           DO i = 1, SIZE(rr,2)
             bathi = 0.d0
-            htilde = h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.0d0)
+            htilde= h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D_wave*t))**2.0d0)
             vv(i) = MAX(htilde,0.d0)
-            vv(i) = vv(i) * D - h1
+            vv(i) = vv(i) * D_wave - h1 * D_wave
           END DO
         !ELSE
           ! DO i = 1, SIZE(rr,2)
           !   bathi = 0.d0
           !   htilde =  h1 + (h2 - h1)*1.0d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.0d0
           !   vv(i) = MAX(htilde,0.d0)
-          !   vv(i) = vv(i) * D - h1
+          !   vv(i) = vv(i) * D - h1 * D
           ! END DO
 
        !END IF
@@ -791,7 +797,7 @@ CONTAINS
        ! for initial velocity u
          DO i = 1, SIZE(rr,2)
            bathi = 0.d0
-           htilde =  h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.0d0)
+           htilde =  h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D_wave*t))**2.0d0)
            vv(i) = MAX(htilde,0.d0)
            vv(i) = vv(i) * 0.d0
          END DO
@@ -800,7 +806,7 @@ CONTAINS
          IF (t.LE.1.d-10) THEN
            DO i = 1, SIZE(rr,2)
              bathi = 0.d0
-             htilde = h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.0d0)
+             htilde = h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D_wave*t))**2.0d0)
              vv(i) = MAX(htilde,0.d0)
              vv(i) = vv(i)*vv(i)
            END DO
@@ -809,10 +815,10 @@ CONTAINS
         IF (t.LE.1.d-10) THEN
              DO i = 1, SIZE(rr,2)
                bathi = 0.d0
-               htilde = h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.0d0)
+               htilde = h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D_wave*t))**2.0d0)
                vv(i) = MAX(htilde,0.d0)
-               vv(i) = -d * h1 * ( (h2 - h1) * z * 1.d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.d0) &
-               * TANH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t)) )
+               vv(i) = D_wave * h1 * ( (h2 - h1) * z * 1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D_wave*t))**2.d0) &
+               * TANH(1.0d0/2.0d0*z*(rr(1,i)-x0-D_wave*t)) )
              END DO
        END IF
       END SELECT
