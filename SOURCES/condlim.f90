@@ -764,13 +764,13 @@ CONTAINS
           !IF (t.LE.1.d-10) THEN
             DO i = 1, SIZE(rr,2)
               bathi = 0.d0
-              htilde= h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D_wave*t))**2.0d0)
+              htilde= h1 + (h2 - h1)*(1.0d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D_wave*t)))**2.0d0
               vv(i) = max(htilde,0.d0)
           !  END DO
           ! ELSE ! exact solution
           !   DO i = 1, SIZE(rr,2)
           !     bathi = 0.d0
-          !     htilde= h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.0d0)
+          !     htilde= h1 + (h2 - h1)*(1.0d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D_wave*t)))**2.0d0
           !     vv(i) = max(htilde,0.d0)
             END DO
          !END IF
@@ -780,14 +780,14 @@ CONTAINS
         !IF (t.LE.1.d-10) THEN
           DO i = 1, SIZE(rr,2)
             bathi = 0.d0
-            htilde= h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D_wave*t))**2.0d0)
+            htilde= h1 + (h2 - h1)*(1.0d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D_wave*t)))**2.0d0
             vv(i) = MAX(htilde,0.d0)
             vv(i) = vv(i) * D_wave - h1 * D_wave
           END DO
         !ELSE
           ! DO i = 1, SIZE(rr,2)
           !   bathi = 0.d0
-          !   htilde =  h1 + (h2 - h1)*1.0d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D*t))**2.0d0
+          !   htilde =  h1 + (h2 - h1)*(1.0d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D_wave*t)))**2.0d0
           !   vv(i) = MAX(htilde,0.d0)
           !   vv(i) = vv(i) * D - h1 * D
           ! END DO
@@ -797,7 +797,7 @@ CONTAINS
        ! for initial velocity u
          DO i = 1, SIZE(rr,2)
            bathi = 0.d0
-           htilde =  h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D_wave*t))**2.0d0)
+           htilde =  h1 + (h2 - h1)*(1.0d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D_wave*t)))**2.0d0
            vv(i) = MAX(htilde,0.d0)
            vv(i) = vv(i) * 0.d0
          END DO
@@ -806,7 +806,7 @@ CONTAINS
          IF (t.LE.1.d-10) THEN
            DO i = 1, SIZE(rr,2)
              bathi = 0.d0
-             htilde = h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D_wave*t))**2.0d0)
+             htilde = h1 + (h2 - h1)*(1.0d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D_wave*t)))**2.0d0
              vv(i) = MAX(htilde,0.d0)
              vv(i) = vv(i)*vv(i)
            END DO
@@ -815,10 +815,10 @@ CONTAINS
         IF (t.LE.1.d-10) THEN
              DO i = 1, SIZE(rr,2)
                bathi = 0.d0
-               htilde = h1 + (h2 - h1)*1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D_wave*t))**2.0d0)
+               htilde = h1 + (h2 - h1)*(1.0d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D_wave*t)))**2.0d0
                vv(i) = MAX(htilde,0.d0)
-               vv(i) = D_wave * h1 * ( (h2 - h1) * z * 1.0d0/(COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D_wave*t))**2.d0) &
-               * TANH(1.0d0/2.0d0*z*(rr(1,i)-x0-D_wave*t)) )
+               vv(i) = - D_wave * h1 * ((h1 - h2)*z*(1.0d0/COSH(1.0d0/2.0d0*z*(rr(1,i)-x0-D_wave*t)))**2.0d0 &
+               * TANH(1.0d0/2.0d0*z*(rr(1,i)-x0-D_wave*t)))
              END DO
        END IF
       END SELECT
