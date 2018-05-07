@@ -495,8 +495,8 @@ CONTAINS
     REAL(KIND=8) :: paper_constant, localMeshSize
     INTEGER :: d, i, j, k, p
 
-    ! here assuming shape regularity so that Area = 1/2 diam^2
-    ! and we find local diameter of trianle
+    ! here assuming shape regularity so that Area = 1/2 mesh_size^2
+    ! and we find local mesh_size of trianle
     localMeshSize = SQRT(2.d0 * inputs%localTriangleArea)
     ! define this constant to make our lives easier
     paper_constant = inputs%lambdaSGN * inputs%gravity/(3.d0 * localMeshSize)
