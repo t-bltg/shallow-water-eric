@@ -492,12 +492,14 @@ CONTAINS
     REAL(KIND=8), DIMENSION(inputs%syst_size,mesh%np)  :: un
     REAL(KIND=8), DIMENSION(inputs%syst_size,mesh%np), INTENT(OUT) :: rk
     REAL(KIND=8), DIMENSION(mesh%np) :: s, psi, pTilde, x
-    REAL(KIND=8) :: paper_constant
+    REAL(KIND=8) :: paper_constant, localMeshSize
     INTEGER :: d, i, j, k, p
 
-
+    ! here assuming shape regularity so that Area = 1/2 diam^2
+    ! and we find local diameter of trianle
+    localMeshSize = SQRT(2.d0 * inputs%localTriangleArea)
     ! define this constant to make our lives easier
-    paper_constant = inputs%lambdaSGN * inputs%gravity/(3.d0 * inputs%localMeshSize)
+    paper_constant = inputs%lambdaSGN * inputs%gravity/(3.d0 * localMeshSize)
 
 
     ! rest of pressure term that's not 1/2 g h^2 so just pTilde (see our paper)
@@ -509,21 +511,21 @@ CONTAINS
       x(i) = un(4,i)/un(1,i)**2
 
       ! this is psi from our paper, see Remark 2.5
-      !psi(i) = 12.d0 * (x(i)-1.d0)
-      psi(i) = 4.d0 * (x(i) - 1.d0/x(i))
+      psi(i) = 12.d0 * (x(i)-1.d0)
+      ! psi(i) = 4.d0 * (x(i) - 1.d0/x(i))
 
       ! this is pTilde from our paper, see Remark 2.5
-      !pTilde(i) = paper_constant * un(1,i)**3 &
-      !      * (2.d0 + 4.d0 * (x(i)**3) - 6.d0*(x(i)**4))
       pTilde(i) = paper_constant * un(1,i)**3 &
-           * (2.d0 - 2.d0 * (x(i)**4))
+           * (2.d0 + 4.d0 * (x(i)**3) - 6.d0*(x(i)**4))
+      ! pTilde(i) = paper_constant * un(1,i)**3 &
+      !      * (2.d0 - 2.d0 * (x(i)**4))
 
       s(i) = 3.d0*paper_constant * (un(4,i)/un(1,i))**2 * psi(i)
 
 
        ! update momentum equations here
        DO p = cij(1)%ia(i), cij(1)%ia(i+1) - 1
-        DO k = 1, k_dim ! only doing 2D in 1D setting
+        DO k = 1, 1 !  doing 2D in 1D setting so only update x momentum equation
            rk(k+1,i) = rk(k+1,i) - pTilde(i)*cij(k)%aa(p)
         END DO
       END DO

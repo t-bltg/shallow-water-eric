@@ -1,7 +1,7 @@
 ===Name of directory for mesh file===
 '../MESHES/SGN_CANAL'
 ===Name of mesh file===
-rectangle.5.FEM
+rectangle.1.FEM
 ===Test case number===
 13
 ===Final time===
@@ -39,8 +39,8 @@ rectangle.5.FEM
 1
 ===Lambda for SGN model===
 9.0d0
-===Local mesh size===
-0.00625d0
+===Local triangle area===
+0.1d0
 0.1d0
 0.05d0
 0.025d0

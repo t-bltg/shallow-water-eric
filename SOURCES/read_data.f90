@@ -27,7 +27,7 @@ MODULE input_data
      REAL(KIND=8)                   :: htiny
      REAL(KIND=8)                   :: epsilon
      REAL(KIND=8)                   :: lambdaSGN
-     REAL(KIND=8)                   :: localMeshSize
+     REAL(KIND=8)                   :: localTriangleArea
   END type my_data
   TYPE(my_data), PUBLIC  :: inputs
   PRIVATE
@@ -92,8 +92,8 @@ CONTAINS
     CASE(13)
        CALL read_until(in_unit, "===Lambda for SGN model===")
        READ (in_unit,*) inputs%lambdaSGN
-       CALL read_until(in_unit, "===Local mesh size===")
-       READ (in_unit,*) inputs%localMeshSize
+       CALL read_until(in_unit, "===Local triangle area===")
+       READ (in_unit,*) inputs%localTriangleArea
     END SELECT
 
  CLOSE(in_unit)
