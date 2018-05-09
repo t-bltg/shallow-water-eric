@@ -502,10 +502,10 @@ CONTAINS
     paper_constant = inputs%lambdaSGN * inputs%gravity/(3.d0 * localMeshSize)
 
     ! rest of pressure term that's not 1/2 g h^2 so just pTilde (see our paper)
-    ! we define s, psi and pTilde separately to make our lives easier
+    ! we first define s, psi and pTilde
     DO n = 1,mesh%np
       ! this is eta/h
-      x(n) = un(4,n)/un(1,n)**2
+      x(n) = un(4,n)/(un(1,n)**2)
       ! this is psi from our paper, see Remark 2.5
       psi(n) = 12.d0 * (x(n)-1.d0)
       ! psi(n) = 4.d0 * (x(n) - 1.d0/x(n))
@@ -517,15 +517,14 @@ CONTAINS
       !      * (2.d0 - 2.d0 * (x(n)**4))
 
       ! this is the source term
-      s(n) = 3.d0*paper_constant * (un(4,i)/un(1,i))**2 * psi(n)
+      s(n) = 3.d0*paper_constant * (un(4,n)/un(1,n))**2 * psi(n)
     END DO
 
     DO i = 1, mesh%np
-
        ! update momentum equations here
        DO p = cij(1)%ia(i), cij(1)%ia(i+1) - 1
           j = cij(1)%ja(p)
-            DO k = 1, 1 !  doing 2D in 1D setting so only update x momentum equation
+            DO k = 1, k_dim !  doing 2D in 1D setting so only update x momentum equation
                rk(k+1,i) = rk(k+1,i) - pTilde(j)*cij(k)%aa(p)
             END DO
        END DO
