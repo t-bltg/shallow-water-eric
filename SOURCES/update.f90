@@ -491,19 +491,27 @@ CONTAINS
     IMPLICIT NONE
     REAL(KIND=8), DIMENSION(inputs%syst_size,mesh%np)  :: un
     REAL(KIND=8), DIMENSION(inputs%syst_size,mesh%np), INTENT(OUT) :: rk
-    REAL(KIND=8), DIMENSION(mesh%np) :: s, psi, pTilde, x
-    REAL(KIND=8) :: paper_constant, localMeshSize
+    REAL(KIND=8), DIMENSION(mesh%np) :: s, psi, pTilde, x, localMeshSize, paper_constant
     INTEGER :: d, i, j, k, p, n
 
     ! here assuming shape regularity so that Area = 1/2 mesh_size^2
     ! and we find local mesh_size of trianle
-    localMeshSize = SQRT(2.d0 * inputs%localTriangleArea)
+    ! localMeshSize = SQRT(2.d0 * inputs%localTriangleArea)
     ! define this constant to make our lives easier
-    paper_constant = inputs%lambdaSGN * inputs%gravity/(3.d0 * localMeshSize)
+
 
     ! rest of pressure term that's not 1/2 g h^2 so just pTilde (see our paper)
+
+    DO n = 1,mesh%np
+      localMeshSize(n) = SQRT(lumped(n))
+      paper_constant(n) = inputs%lambdaSGN * inputs%gravity/(3.d0 * localMeshSize(n))
+    END DO
+
     ! we first define s, psi and pTilde
     DO n = 1,mesh%np
+
+      ! define paper_constant HERE
+
       ! this is eta/h
       x(n) = un(4,n)/(un(1,n)**2)
       ! this is psi from our paper, see Remark 2.5
@@ -511,13 +519,13 @@ CONTAINS
       ! psi(n) = 4.d0 * (x(n) - 1.d0/x(n))
 
       ! this is pTilde from our paper, see Remark 2.5
-      pTilde(n) = paper_constant * un(1,n)**3 &
+      pTilde(n) = paper_constant(n) * un(1,n)**3 &
            * (2.d0 + 4.d0 * (x(n)**3) - 6.d0*(x(n)**4))
       ! pTilde(n) = paper_constant * un(1,n)**3 &
       !      * (2.d0 - 2.d0 * (x(n)**4))
 
       ! this is the source term
-      s(n) = 3.d0*paper_constant * (un(4,n)/un(1,n))**2 * psi(n)
+      s(n) = 3.d0*paper_constant(n) * (un(4,n)/un(1,n))**2 * psi(n)
     END DO
 
     DO i = 1, mesh%np
